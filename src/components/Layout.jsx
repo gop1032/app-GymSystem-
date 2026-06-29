@@ -1,56 +1,100 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/layout.css";
 
 function Layout() {
-  return (
-    <div className="layout">
 
-      <aside className="sidebar">
+    const location = useLocation();
 
-        <div className="logo">
-          <h2>GymSystem</h2>
-          <p>Management</p>
+    return (
+
+        <div className="layout">
+
+            <aside className="sidebar">
+
+                <div className="logo">
+
+                    <h1>GymSystem</h1>
+
+                    <span>Management</span>
+
+                </div>
+
+                <nav>
+
+                    <Link
+                        className={location.pathname === "/" ? "active" : ""}
+                        to="/"
+                    >
+                        🏠 Inicio
+                    </Link>
+
+                    <Link
+                        className={location.pathname === "/clientes" ? "active" : ""}
+                        to="/clientes"
+                    >
+                        👥 Clientes
+                    </Link>
+
+                    <Link
+                        className={location.pathname === "/planes" ? "active" : ""}
+                        to="/planes"
+                    >
+                        📋 Planes
+                    </Link>
+
+                    <Link
+                        className={location.pathname === "/pagos" ? "active" : ""}
+                        to="/pagos"
+                    >
+                        💳 Pagos
+                    </Link>
+
+                    <Link
+                        className={location.pathname === "/asistencias" ? "active" : ""}
+                        to="/asistencias"
+                    >
+                        📅 Asistencias
+                    </Link>
+
+                </nav>
+
+            </aside>
+
+            <div className="main">
+
+                <header className="topbar">
+
+                    <h2>GymSystem</h2>
+
+                    <div className="topbar-right">
+
+                        <input
+                            type="text"
+                            placeholder="Buscar..."
+                        />
+
+                        <div className="avatar">
+
+                            A
+
+                        </div>
+
+                    </div>
+
+                </header>
+
+                <section className="contenido">
+
+                    <Outlet/>
+
+                </section>
+
+            </div>
+
         </div>
 
-        <nav>
+    );
 
-          <Link to="/">🏠 Inicio</Link>
-
-          <Link to="/clientes">👥 Clientes</Link>
-
-          <Link to="/planes">📋 Planes</Link>
-
-          <Link to="/pagos">💳 Pagos</Link>
-
-          <Link to="/asistencias">📅 Asistencias</Link>
-
-        </nav>
-
-      </aside>
-
-      <main className="content">
-
-        <header className="topbar">
-
-          <h2>GymSystem</h2>
-
-          <input
-            type="text"
-            placeholder="Buscar..."
-          />
-
-        </header>
-
-        <section className="page">
-
-          <Outlet />
-
-        </section>
-
-      </main>
-
-    </div>
-  );
 }
 
 export default Layout;

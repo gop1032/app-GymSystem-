@@ -1,64 +1,127 @@
-function ClienteTable({ clientes }) {
+function ClienteTable({ clientes, eliminar }) {
 
     return (
 
-        <table  cellPadding="10" className="tabla-clientes">
+        <div className="tabla-container">
 
-            <thead>
+            <table className="tabla-clientes">
 
-                <tr>
+                <thead>
 
-                    <th>ID</th>
+                    <tr>
 
-                    <th>Nombre</th>
+                        <th>Socio</th>
 
-                    <th>DNI</th>
+                        <th>DNI</th>
 
-                    <th>Teléfono</th>
+                        <th>Plan</th>
 
-                    <th>Correo</th>
+                        <th>Estado</th>
 
-                    <th>Plan</th>
+                        <th>Acciones</th>
 
-                    <th>Estado</th>
+                    </tr>
 
-                </tr>
+                </thead>
 
-            </thead>
+                <tbody>
 
-            <tbody>
+                    {
 
-                {
+                        clientes.map(cliente=>(
 
-                    clientes.map((cliente) => (
+                            <tr key={cliente.id}>
 
-                        <tr key={cliente.id}>
+                                <td>
 
-                            <td>{cliente.id}</td>
+                                    <div className="cliente-info">
 
-                            <td>{cliente.nombre}</td>
+                                        <div className="avatar-tabla">
 
-                            <td>{cliente.dni}</td>
+                                            {cliente.nombre.charAt(0)}
 
-                            <td>{cliente.telefono}</td>
+                                        </div>
 
-                            <td>{cliente.correo}</td>
+                                        <div>
 
-                            <td>{cliente.plan}</td>
+                                            <strong>{cliente.nombre}</strong>
 
-                            <td>{cliente.estado}</td>
+                                            <p>{cliente.correo}</p>
 
-                        </tr>
+                                        </div>
 
-                    ))
+                                    </div>
 
-                }
+                                </td>
 
-            </tbody>
+                                <td>
 
-        </table>
+                                    {cliente.dni}
 
-    );
+                                </td>
+
+                                <td>
+
+                                    {cliente.plan}
+
+                                </td>
+
+                                <td>
+
+                                    <span
+                                        className={
+                                            cliente.estado==="Activo"
+                                            ?
+                                            "badge activo"
+                                            :
+                                            "badge inactivo"
+                                        }
+                                    >
+
+                                        {cliente.estado}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <button className="btn-icon ver">
+
+                                        👁
+
+                                    </button>
+
+                                    <button className="btn-icon editar">
+
+                                        ✏
+
+                                    </button>
+
+                                    <button
+                                        className="btn-icon eliminar"
+                                        onClick={()=>eliminar(cliente.id)}
+                                    >
+
+                                        🗑
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        ))
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    )
 
 }
 

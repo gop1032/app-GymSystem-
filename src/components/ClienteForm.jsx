@@ -1,126 +1,157 @@
 import { useState } from "react";
 
-function ClienteForm({onGuardar}) {
+function ClienteForm({ onGuardar, cerrar }) {
+  const [cliente, setCliente] = useState({
+    nombre: "",
+    dni: "",
+    telefono: "",
+    correo: "",
+    plan: "",
+    estado: "Activo",
+  });
 
-    const [cliente, setCliente] = useState({
-        nombre: "",
-        dni: "",
-        telefono: "",
-        correo: "",
-        plan: "",
-        estado: "Activo",
-    });
-
-    const handleChange = (e) => {
-        setCliente({
-            ...cliente,
-            [e.target.name]: e.target.value,
-        });
-    };
-const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (
-        cliente.nombre.trim() === "" ||
-        cliente.dni.trim() === ""
-    ) {
-        alert("Nombre y DNI son obligatorios.");
-        return;
-    }
-
-    await onGuardar(cliente);
-
+  const cambiar = (e) => {
     setCliente({
-        nombre: "",
-        dni: "",
-        telefono: "",
-        correo: "",
-        plan: "",
-        estado: "Activo",
+      ...cliente,
+      [e.target.name]: e.target.value,
     });
-};
+  };
 
-    return (
-        <div className="cliente-form">
-            <h2>Registrar Cliente</h2>
-            <form onSubmit={handleSubmit}>
-                <label>Nombre</label>
-                <br />
-                <input className="input-control"
-                    type="text"
-                    name="nombre"
-                    value={cliente.nombre}
-                    onChange={handleChange}
-                />
-                <br /><br />
-                <label>DNI</label>
-                <br />
-                <input className="input-control"
-                    type="text"
-                    name="dni"
-                    value={cliente.dni}
-                    onChange={handleChange}
-                />
-                <br /><br />
-                <label>Teléfono</label>
-                <br />
-            <input className="input-control"
-               type="text"
-              name="telefono"
-             value={cliente.telefono}
-             onChange={handleChange}
-            />
-            <label>Correo</label>
-            <br />
-        <input className="input-control"
-             type="email"
-              name="correo"
-                value={cliente.correo}
-              onChange={handleChange}
-        />       
-<br /><br />  
-        <label>Plan</label>
-        <br />
+  const guardar = (e) => {
+    e.preventDefault();
+    onGuardar(cliente);
+    cerrar();
+  };
 
-    <select className="input-control"
-        name="plan"
-      value={cliente.plan}
-      onChange={handleChange}
-    >
-    <option value="">Seleccione</option>
-    <option value="Mensual">
-        Mensual
-    </option>
-    <option value="Trimestral">
-        Trimestral
-    </option>
-    <option value="Anual">
-        Anual
-    </option>
-    </select>
-<br /><br />  
-    <label>Estado</label>
-    <br />
-<select className="input-control"
-    name="estado"
-    value={cliente.estado}
-    onChange={handleChange}
->
-    <option value="Activo">
-        Activo
-    </option>
-    <option value="Suspendido">
-        Suspendido
-    </option>
-</select>
-<br /><br />
-            <br /><br />
-                <button className="btn-registrar">
-                    Registrar
-                </button>
-            </form>
+  return (
+    <form className="cliente-form" onSubmit={guardar}>
+
+      <div className="form-header">
+
+        <div>
+
+          <h2>Nuevo Cliente</h2>
+
+          <p>Complete la información del socio.</p>
+
         </div>
-    );
+
+        <button
+          type="button"
+          className="cerrar"
+          onClick={cerrar}
+        >
+          ✕
+        </button>
+
+      </div>
+
+      <div className="form-grid">
+
+        <div className="grupo">
+
+          <label>Nombre</label>
+
+          <input
+            type="text"
+            name="nombre"
+            placeholder="Ingrese el nombre"
+            onChange={cambiar}
+          />
+
+        </div>
+
+        <div className="grupo">
+
+          <label>DNI</label>
+
+          <input
+            type="text"
+            name="dni"
+            placeholder="Ingrese el DNI"
+            onChange={cambiar}
+          />
+
+        </div>
+
+        <div className="grupo">
+
+          <label>Teléfono</label>
+
+          <input
+            type="text"
+            name="telefono"
+            placeholder="Ingrese el teléfono"
+            onChange={cambiar}
+          />
+
+        </div>
+
+        <div className="grupo">
+
+          <label>Correo</label>
+
+          <input
+            type="email"
+            name="correo"
+            placeholder="Ingrese el correo"
+            onChange={cambiar}
+          />
+
+        </div>
+
+        <div className="grupo full">
+
+          <label>Plan</label>
+
+          <select
+            name="plan"
+            onChange={cambiar}
+          >
+            <option value="">Seleccione</option>
+            <option>Mensual</option>
+            <option>Trimestral</option>
+            <option>Semestral</option>
+            <option>Anual</option>
+          </select>
+
+        </div>
+
+        <div className="grupo full">
+
+          <label>Estado</label>
+
+          <select
+            name="estado"
+            defaultValue="Activo"
+            onChange={cambiar}
+          >
+            <option>Activo</option>
+            <option>Inactivo</option>
+          </select>
+
+        </div>
+
+      </div>
+
+      <div className="acciones-form">
+
+        <button
+          type="button"
+          className="cancelar"
+          onClick={cerrar}
+        >
+          Cancelar
+        </button>
+
+        <button className="guardar">
+          Registrar
+        </button>
+
+      </div>
+
+    </form>
+  );
 }
 
 export default ClienteForm;
