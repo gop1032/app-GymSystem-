@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Layout from "../components/Layout";
+
 import Home from "../views/Home";
 import Clientes from "../views/Clientes";
 import Planes from "../views/Planes";
@@ -10,11 +12,13 @@ function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/clientes" element={<Clientes />} />
-                <Route path="/planes" element={<Planes />} />
-                <Route path="/pagos" element={<Pagos />} />
-                <Route path="/asistencias" element={<Asistencias />} />
+                <Route element={<Layout />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/clientes" element={<Clientes />} />
+                    <Route path="/planes" element={<Planes />} />
+                    <Route path="/pagos" element={<Pagos />} />
+                    <Route path="/asistencias" element={<Asistencias />} />
+                </Route>
             </Routes>
         </BrowserRouter>
     );
