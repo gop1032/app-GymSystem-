@@ -1,0 +1,39 @@
+.clientes-container{
+    width:90%;
+    margin:auto;
+}
+
+.cliente-form{
+    border:1px solid #ccc;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.input-control{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    margin-bottom:10px;
+    box-sizing:border-box;
+}
+
+.btn-registrar{
+    padding:10px 20px;
+    cursor:pointer;
+}
+
+.tabla-clientes{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.tabla-clientes th,
+.tabla-clientes td{
+    border:1px solid #ccc;
+    padding:10px;
+    text-align:left;
+}
+
+.tabla-clientes th{
+    background:#f2f2f2;
+}

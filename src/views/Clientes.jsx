@@ -1,5 +1,9 @@
+import "../styles/Clientes.css";
+
 import { useEffect, useState } from "react";
-import { obtenerClientes } from "../services/clienteService";
+import {obtenerClientes,crearCliente,} from "../services/clienteService";
+import ClienteForm from "../components/ClienteForm";
+import ClienteTable from "../components/ClienteTable";
 
 function Clientes() {
 
@@ -12,6 +16,19 @@ function Clientes() {
         setClientes(respuesta.data);
 
     };
+    const guardarCliente = async (cliente) => {
+    try {
+        await crearCliente(cliente);
+
+        await listarClientes();
+
+        alert("Cliente registrado correctamente.");
+    } catch (error) {
+        console.error(error);
+
+        alert("Ocurrió un error al registrar el cliente.");
+    }
+    };
 
     useEffect(() => {
 
@@ -20,24 +37,17 @@ function Clientes() {
     }, []);
 
     return (
-        <div>
-
-            <h1>Clientes</h1>
-
-            {
-                clientes.map(cliente => (
-
-                    <p key={cliente.id}>
-
-                        {cliente.nombre}
-
-                    </p>
-
-                ))
-            }
-
-        </div>
-    );
+    <div className="clientes-container">
+        <h1>Gestion de Clientes</h1>
+        <ClienteForm
+        onGuardar={guardarCliente}
+        />
+        <br />
+        <ClienteTable
+         clientes={clientes}
+        />
+    </div>
+);
 }
 
 export default Clientes;
