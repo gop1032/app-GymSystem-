@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import PulseLine from "./PulseLine";
 import "../styles/layout.css";
 
 function Layout() {
@@ -10,8 +11,9 @@ function Layout() {
     <div className="layout">
       <aside className="sidebar">
         <div className="logo">
-          <h1>GymSystem</h1>
-          <span>Management</span>
+          <h1>GYMSYSTEM</h1>
+          <span>Control de acceso</span>
+          <PulseLine />
         </div>
 
         <nav>

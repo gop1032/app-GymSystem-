@@ -1,5 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { iniciarLoginGoogle } from "../services/authService";
+import PulseLine from "../components/PulseLine";
 import "../styles/login.css";
 
 const MENSAJES_ERROR = {
@@ -16,15 +17,16 @@ function Login() {
     <div className="login-container">
       <div className="login-left">
         <div>
-          <h1>GymSystem</h1>
-          <h3>Management</h3>
-          <p>Sistema de Gestión para Gimnasios</p>
+          <h1>GYMSYSTEM</h1>
+          <h3>Control de acceso &amp; gestión</h3>
+          <PulseLine animated />
+          <p>Panel interno para el equipo del gimnasio.</p>
 
           <ul>
-            <li>Gestión de Clientes</li>
-            <li>Administración de Planes</li>
-            <li>Control de Pagos</li>
-            <li>Control de acceso con QR</li>
+            <li>Registro de clientes con pase QR</li>
+            <li>Planes, membresías y renovaciones</li>
+            <li>Control de pagos e ingresos diarios</li>
+            <li>Acceso en vivo por escaneo QR</li>
           </ul>
         </div>
       </div>

@@ -5,14 +5,22 @@ import {
   obtenerClientes,
   crearCliente,
   eliminarCliente,
+  obtenerQR,
 } from "../services/clienteService";
 
 import "../styles/clientes.css";
+
+function membresiaVigente(cliente) {
+  const m = cliente.membresias?.[0];
+  return m && new Date(m.fechaFin) >= new Date() && m.estado === "ACTIVA";
+}
 
 function Clientes() {
   const [clientes, setClientes] = useState([]);
   const [buscar, setBuscar] = useState("");
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [qrModal, setQrModal] = useState(null); // { nombre, imagen }
+
   const listarClientes = async () => {
     const res = await obtenerClientes();
     setClientes(res.data);
@@ -26,16 +34,26 @@ function Clientes() {
     await crearCliente(cliente);
     listarClientes();
   };
+
   const eliminar = async (id) => {
     if (!window.confirm("¿Eliminar cliente?")) return;
     await eliminarCliente(id);
     listarClientes();
   };
+
+  const verQR = async (cliente) => {
+    const { data } = await obtenerQR(cliente.id);
+    setQrModal({ nombre: cliente.nombre, imagen: data.imagen });
+  };
+
   const clientesFiltrados = clientes.filter(
     (cliente) =>
       cliente.nombre.toLowerCase().includes(buscar.toLowerCase()) ||
-      cliente.dni.includes(buscar),
+      cliente.dni.includes(buscar)
   );
+
+  const activos = clientes.filter(membresiaVigente).length;
+
   return (
     <>
       <div className="cards-clientes">
@@ -46,20 +64,17 @@ function Clientes() {
 
         <div className="card">
           <h4>Activos</h4>
-          <h2>{clientes.filter((c) => c.estado === "Activo").length}</h2>
+          <h2>{activos}</h2>
         </div>
 
         <div className="card">
-          <h4>Mensuales</h4>
-          <h2>{clientes.filter((c) => c.plan === "Mensual").length}</h2>
-        </div>
-
-        <div className="card">
-          <h4>Anuales</h4>
-          <h2>{clientes.filter((c) => c.plan === "Anual").length}</h2>
+          <h4>Vencidos / Sin plan</h4>
+          <h2>{clientes.length - activos}</h2>
         </div>
       </div>
+
       <h1 className="titulo">Gestión de Socios</h1>
+
       <div className="toolbar">
         <input
           type="text"
@@ -68,10 +83,7 @@ function Clientes() {
           onChange={(e) => setBuscar(e.target.value)}
         />
 
-        <button
-          className="btn-nuevo"
-          onClick={() => setMostrarFormulario(!mostrarFormulario)}
-        >
+        <button className="btn-nuevo" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
           + Nuevo Socio
         </button>
       </div>
@@ -79,15 +91,23 @@ function Clientes() {
       {mostrarFormulario && (
         <div className="modal">
           <div className="modal-content">
-            <ClienteForm
-              onGuardar={guardarCliente}
-              cerrar={() => setMostrarFormulario(false)}
-            />
+            <ClienteForm onGuardar={guardarCliente} cerrar={() => setMostrarFormulario(false)} />
           </div>
         </div>
       )}
 
-      <ClienteTable clientes={clientesFiltrados} eliminar={eliminar} />
+      {qrModal && (
+        <div className="modal" onClick={() => setQrModal(null)}>
+          <div className="modal-content qr-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>QR de {qrModal.nombre}</h2>
+            <img src={qrModal.imagen} alt={`QR de ${qrModal.nombre}`} />
+            <p>Este código es el pase de acceso del cliente al gimnasio.</p>
+            <button className="guardar" onClick={() => setQrModal(null)}>Cerrar</button>
+          </div>
+        </div>
+      )}
+
+      <ClienteTable clientes={clientesFiltrados} eliminar={eliminar} verQR={verQR} />
     </>
   );
 }
