@@ -5,14 +5,12 @@ const session = require("express-session");
 const passport = require("./config/passport");
 
 const authRoutes = require("./routes/auth.routes");
-// Próximos módulos (se agregan en las siguientes fases):
-// const clienteRoutes = require("./routes/cliente.routes");
-// const planRoutes = require("./routes/plan.routes");
-// const membresiaRoutes = require("./routes/membresia.routes");
-// const pagoRoutes = require("./routes/pago.routes");
-// const asistenciaRoutes = require("./routes/asistencia.routes");
-// const entrenadorRoutes = require("./routes/entrenador.routes");
-// const paseDiarioRoutes = require("./routes/paseDiario.routes");
+const entrenadorRoutes = require("./routes/entrenador.routes");
+const clienteRoutes = require("./routes/cliente.routes");
+const planRoutes = require("./routes/plan.routes");
+const membresiaRoutes = require("./routes/membresia.routes");
+const pagoRoutes = require("./routes/pago.routes");
+const paseDiarioRoutes = require("./routes/paseDiario.routes");
 
 const app = express();
 
@@ -33,13 +31,12 @@ app.use(passport.initialize());
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 
 app.use("/api/auth", authRoutes);
-// app.use("/api/clientes", clienteRoutes);
-// app.use("/api/planes", planRoutes);
-// app.use("/api/membresias", membresiaRoutes);
-// app.use("/api/pagos", pagoRoutes);
-// app.use("/api/asistencias", asistenciaRoutes);
-// app.use("/api/entrenadores", entrenadorRoutes);
-// app.use("/api/pases-diarios", paseDiarioRoutes);
+app.use("/api/entrenadores", entrenadorRoutes);
+app.use("/api/clientes", clienteRoutes);
+app.use("/api/planes", planRoutes);
+app.use("/api/membresias", membresiaRoutes);
+app.use("/api/pagos", pagoRoutes);
+app.use("/api/pases-diarios", paseDiarioRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));

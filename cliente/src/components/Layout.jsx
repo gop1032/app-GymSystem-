@@ -1,15 +1,16 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import "../styles/layout.css";
 
 function Layout() {
   const location = useLocation();
+  const { usuario, esAdmin, cerrarSesion } = useAuth();
 
   return (
     <div className="layout">
       <aside className="sidebar">
         <div className="logo">
           <h1>GymSystem</h1>
-
           <span>Management</span>
         </div>
 
@@ -25,12 +26,15 @@ function Layout() {
             👥 Clientes
           </Link>
 
-          <Link
-            className={location.pathname === "/planes" ? "active" : ""}
-            to="/planes"
-          >
-            📋 Planes
-          </Link>
+          {/* Solo Administrador ve y accede a Planes */}
+          {esAdmin && (
+            <Link
+              className={location.pathname === "/planes" ? "active" : ""}
+              to="/planes"
+            >
+              📋 Planes
+            </Link>
+          )}
 
           <Link
             className={location.pathname === "/pagos" ? "active" : ""}
@@ -43,7 +47,7 @@ function Layout() {
             className={location.pathname === "/asistencias" ? "active" : ""}
             to="/asistencias"
           >
-            📅 Asistencias
+            📅 Asistencias / Acceso QR
           </Link>
         </nav>
       </aside>
@@ -55,7 +59,17 @@ function Layout() {
           <div className="topbar-right">
             <input type="text" placeholder="Buscar..." />
 
-            <div className="avatar">A</div>
+            <span className="usuario-nombre">
+              {usuario?.nombre} <small>({usuario?.rol})</small>
+            </span>
+
+            <div className="avatar" title={usuario?.correo}>
+              {usuario?.nombre?.charAt(0).toUpperCase() || "?"}
+            </div>
+
+            <button className="btn-logout" onClick={cerrarSesion} title="Cerrar sesión">
+              Salir
+            </button>
           </div>
         </header>
 

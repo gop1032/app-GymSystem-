@@ -2,11 +2,11 @@
   "name": "gymsystem-server",
   "version": "1.0.0",
   "description": "Backend de GymSystem - Express + Prisma + PostgreSQL",
-  "main": "src/app.js",
+  "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "nodemon src/app.js",
-    "start": "node src/app.js",
+    "dev": "nodemon app.js",
+    "start": "node app.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
