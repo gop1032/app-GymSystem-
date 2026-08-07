@@ -1,53 +1,37 @@
 import "../styles/modulos.css";
 
-function Pagos(){
+function Pagos() {
+  return (
+    <>
+      <h1>Pagos</h1>
 
-    return(
+      <table className="tabla-clientes">
+        <thead>
+          <tr>
+            <th>Cliente</th>
 
-        <>
+            <th>Plan</th>
 
-        <h1>Pagos</h1>
+            <th>Monto</th>
 
-        <table className="tabla-clientes">
+            <th>Fecha</th>
+          </tr>
+        </thead>
 
-            <thead>
+        <tbody>
+          <tr>
+            <td>Juan Perez</td>
 
-                <tr>
+            <td>Mensual</td>
 
-                    <th>Cliente</th>
+            <td>S/.80</td>
 
-                    <th>Plan</th>
-
-                    <th>Monto</th>
-
-                    <th>Fecha</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <tr>
-
-                    <td>Juan Perez</td>
-
-                    <td>Mensual</td>
-
-                    <td>S/.80</td>
-
-                    <td>29/06/2026</td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-        </>
-
-    )
-
+            <td>29/06/2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </>
+  );
 }
 
 export default Pagos;

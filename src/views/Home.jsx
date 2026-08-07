@@ -3,152 +3,98 @@ import { obtenerClientes } from "../services/clienteService";
 import "../styles/home.css";
 
 function Home() {
+  const [clientes, setClientes] = useState([]);
 
-    const [clientes, setClientes] = useState([]);
+  useEffect(() => {
+    cargarClientes();
+  }, []);
 
-    useEffect(() => {
-        cargarClientes();
-    }, []);
+  const cargarClientes = async () => {
+    const res = await obtenerClientes();
+    setClientes(res.data);
+  };
 
-    const cargarClientes = async () => {
-        const res = await obtenerClientes();
-        setClientes(res.data);
-    };
+  const activos = clientes.filter((c) => c.estado === "Activo").length;
+  const mensuales = clientes.filter((c) => c.plan === "Mensual").length;
+  const anuales = clientes.filter((c) => c.plan === "Anual").length;
 
-    const activos = clientes.filter(c => c.estado === "Activo").length;
-    const mensuales = clientes.filter(c => c.plan === "Mensual").length;
-    const anuales = clientes.filter(c => c.plan === "Anual").length;
+  return (
+    <>
+      <div className="dashboard-header">
+        <div>
+          <h1>Dashboard</h1>
 
-    return (
+          <p>Resumen general del gimnasio</p>
+        </div>
+      </div>
 
-        <>
+      <div className="dashboard-cards">
+        <div className="dashboard-card">
+          <span>👥</span>
 
-            <div className="dashboard-header">
+          <h4>Total Clientes</h4>
 
-                <div>
+          <h2>{clientes.length}</h2>
+        </div>
 
-                    <h1>Dashboard</h1>
+        <div className="dashboard-card">
+          <span>✅</span>
 
-                    <p>
+          <h4>Activos</h4>
 
-                        Resumen general del gimnasio
+          <h2>{activos}</h2>
+        </div>
 
-                    </p>
+        <div className="dashboard-card">
+          <span>📅</span>
 
-                </div>
+          <h4>Mensuales</h4>
 
-            </div>
+          <h2>{mensuales}</h2>
+        </div>
 
-            <div className="dashboard-cards">
+        <div className="dashboard-card">
+          <span>👑</span>
 
-                <div className="dashboard-card">
+          <h4>Anuales</h4>
 
-                    <span>👥</span>
+          <h2>{anuales}</h2>
+        </div>
+      </div>
 
-                    <h4>Total Clientes</h4>
+      <div className="ultimos-clientes">
+        <div className="cabecera">
+          <h2>Últimos socios registrados</h2>
+        </div>
 
-                    <h2>{clientes.length}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
 
-                </div>
+              <th>Plan</th>
 
-                <div className="dashboard-card">
+              <th>Estado</th>
+            </tr>
+          </thead>
 
-                    <span>✅</span>
+          <tbody>
+            {clientes.slice(0, 5).map((cliente) => (
+              <tr key={cliente.id}>
+                <td>{cliente.nombre}</td>
 
-                    <h4>Activos</h4>
+                <td>{cliente.plan}</td>
 
-                    <h2>{activos}</h2>
-
-                </div>
-
-                <div className="dashboard-card">
-
-                    <span>📅</span>
-
-                    <h4>Mensuales</h4>
-
-                    <h2>{mensuales}</h2>
-
-                </div>
-
-                <div className="dashboard-card">
-
-                    <span>👑</span>
-
-                    <h4>Anuales</h4>
-
-                    <h2>{anuales}</h2>
-
-                </div>
-
-            </div>
-
-            <div className="ultimos-clientes">
-
-                <div className="cabecera">
-
-                    <h2>
-
-                        Últimos socios registrados
-
-                    </h2>
-
-                </div>
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Nombre</th>
-
-                            <th>Plan</th>
-
-                            <th>Estado</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {
-
-                            clientes.slice(0,5).map(cliente=>(
-
-                                <tr key={cliente.id}>
-
-                                    <td>{cliente.nombre}</td>
-
-                                    <td>{cliente.plan}</td>
-
-                                    <td>
-
-                                        <span className="estado-home">
-
-                                            {cliente.estado}
-
-                                        </span>
-
-                                    </td>
-
-                                </tr>
-
-                            ))
-
-                        }
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </>
-
-    );
-
+                <td>
+                  <span className="estado-home">{cliente.estado}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
 }
 
 export default Home;

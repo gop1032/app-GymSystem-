@@ -1,128 +1,70 @@
 function ClienteTable({ clientes, eliminar }) {
+  return (
+    <div className="tabla-container">
+      <table className="tabla-clientes">
+        <thead>
+          <tr>
+            <th>Socio</th>
 
-    return (
+            <th>DNI</th>
 
-        <div className="tabla-container">
+            <th>Plan</th>
 
-            <table className="tabla-clientes">
+            <th>Estado</th>
 
-                <thead>
+            <th>Acciones</th>
+          </tr>
+        </thead>
 
-                    <tr>
+        <tbody>
+          {clientes.map((cliente) => (
+            <tr key={cliente.id}>
+              <td>
+                <div className="cliente-info">
+                  <div className="avatar-tabla">{cliente.nombre.charAt(0)}</div>
 
-                        <th>Socio</th>
+                  <div>
+                    <strong>{cliente.nombre}</strong>
 
-                        <th>DNI</th>
+                    <p>{cliente.correo}</p>
+                  </div>
+                </div>
+              </td>
 
-                        <th>Plan</th>
+              <td>{cliente.dni}</td>
 
-                        <th>Estado</th>
+              <td>{cliente.plan}</td>
 
-                        <th>Acciones</th>
+              <td>
+                <span
+                  className={
+                    cliente.estado === "Activo"
+                      ? "badge activo"
+                      : "badge inactivo"
+                  }
+                >
+                  {cliente.estado}
+                </span>
+              </td>
 
-                    </tr>
+              <td>
+                <button className="btn-icon ver">👁</button>
 
-                </thead>
+                <button className="btn-icon editar">✏</button>
 
-                <tbody>
-
-                    {
-
-                        clientes.map(cliente=>(
-
-                            <tr key={cliente.id}>
-
-                                <td>
-
-                                    <div className="cliente-info">
-
-                                        <div className="avatar-tabla">
-
-                                            {cliente.nombre.charAt(0)}
-
-                                        </div>
-
-                                        <div>
-
-                                            <strong>{cliente.nombre}</strong>
-
-                                            <p>{cliente.correo}</p>
-
-                                        </div>
-
-                                    </div>
-
-                                </td>
-
-                                <td>
-
-                                    {cliente.dni}
-
-                                </td>
-
-                                <td>
-
-                                    {cliente.plan}
-
-                                </td>
-
-                                <td>
-
-                                    <span
-                                        className={
-                                            cliente.estado==="Activo"
-                                            ?
-                                            "badge activo"
-                                            :
-                                            "badge inactivo"
-                                        }
-                                    >
-
-                                        {cliente.estado}
-
-                                    </span>
-
-                                </td>
-
-                                <td>
-
-                                    <button className="btn-icon ver">
-
-                                        👁
-
-                                    </button>
-
-                                    <button className="btn-icon editar">
-
-                                        ✏
-
-                                    </button>
-
-                                    <button
-                                        className="btn-icon eliminar"
-                                        onClick={()=>eliminar(cliente.id)}
-                                    >
-
-                                        🗑
-
-                                    </button>
-
-                                </td>
-
-                            </tr>
-
-                        ))
-
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    )
-
+                <button
+                  className="btn-icon eliminar"
+                  onClick={() => eliminar(cliente.id)}
+                >
+                  🗑
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default ClienteTable;

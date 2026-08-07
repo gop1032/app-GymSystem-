@@ -1,0 +1,168 @@
+// GymSystem - Modelo de datos
+// Curso: Desarrollo de Aplicaciones Web
+// Stack: Prisma ORM + PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// ROLES Y USUARIOS (quienes SÍ usan el sistema)
+// ─────────────────────────────────────────────
+
+model Rol {
+  id       Int       @id @default(autoincrement())
+  nombre   String    @unique // "ADMIN" | "EMPLEADO"
+  usuarios Usuario[]
+
+  @@map("roles")
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  correo    String   @unique
+  googleId  String?  @unique // id de Google (login con Google)
+  password  String? // opcional: permite login local además de Google (útil para pruebas/demo)
+  activo    Boolean  @default(true)
+  rolId     Int
+  rol       Rol      @relation(fields: [rolId], references: [id])
+  pagos     Pago[]
+  pasesDiarios PaseDiario[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("usuarios")
+}
+
+// ─────────────────────────────────────────────
+// ENTRENADORES (solo dato administrativo, sin login)
+// ─────────────────────────────────────────────
+
+model Entrenador {
+  id           Int       @id @default(autoincrement())
+  nombre       String
+  especialidad String?
+  telefono     String?
+  activo       Boolean   @default(true)
+  clientes     Cliente[]
+  createdAt    DateTime  @default(now())
+
+  @@map("entrenadores")
+}
+
+// ─────────────────────────────────────────────
+// CLIENTES (solo dato administrativo, sin login)
+// ─────────────────────────────────────────────
+
+model Cliente {
+  id             Int          @id @default(autoincrement())
+  nombre         String
+  dni            String       @unique
+  telefono       String?
+  correo         String?
+  qrCode         String       @unique @default(uuid()) // identificador único para el pase QR
+  entrenadorId   Int?
+  entrenador     Entrenador?  @relation(fields: [entrenadorId], references: [id])
+  membresias     Membresia[]
+  asistencias    Asistencia[]
+  fechaRegistro  DateTime     @default(now())
+
+  @@map("clientes")
+}
+
+// ─────────────────────────────────────────────
+// PLANES Y MEMBRESÍAS
+// ─────────────────────────────────────────────
+
+model Plan {
+  id           Int         @id @default(autoincrement())
+  nombre       String
+  descripcion  String?
+  precio       Float
+  duracionDias Int // ej: 30 (mensual), 365 (anual)
+  activo       Boolean     @default(true)
+  membresias   Membresia[]
+
+  @@map("planes")
+}
+
+enum EstadoMembresia {
+  ACTIVA
+  VENCIDA
+  CANCELADA
+}
+
+model Membresia {
+  id          Int             @id @default(autoincrement())
+  clienteId   Int
+  cliente     Cliente         @relation(fields: [clienteId], references: [id])
+  planId      Int
+  plan        Plan            @relation(fields: [planId], references: [id])
+  fechaInicio DateTime
+  fechaFin    DateTime
+  estado      EstadoMembresia @default(ACTIVA)
+  pagos       Pago[]
+  createdAt   DateTime        @default(now())
+
+  @@map("membresias")
+}
+
+// ─────────────────────────────────────────────
+// PAGOS (asociados a una membresía)
+// ─────────────────────────────────────────────
+
+enum MetodoPago {
+  EFECTIVO
+  TARJETA
+  YAPE
+  PLIN
+  TRANSFERENCIA
+}
+
+model Pago {
+  id          Int        @id @default(autoincrement())
+  membresiaId Int
+  membresia   Membresia  @relation(fields: [membresiaId], references: [id])
+  usuarioId   Int // quién registró el pago (Admin o Empleado)
+  usuario     Usuario    @relation(fields: [usuarioId], references: [id])
+  monto       Float
+  metodo      MetodoPago @default(EFECTIVO)
+  fecha       DateTime   @default(now())
+
+  @@map("pagos")
+}
+
+// ─────────────────────────────────────────────
+// ASISTENCIAS (control de acceso vía QR)
+// ─────────────────────────────────────────────
+
+model Asistencia {
+  id        Int      @id @default(autoincrement())
+  clienteId Int
+  cliente   Cliente  @relation(fields: [clienteId], references: [id])
+  fechaHora DateTime @default(now())
+
+  @@map("asistencias")
+}
+
+// ─────────────────────────────────────────────
+// PASE DIARIO (visitante sin membresía, registro rápido)
+// ─────────────────────────────────────────────
+
+model PaseDiario {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  dni       String?
+  monto     Float
+  usuarioId Int // quién registró el ingreso (Admin o Empleado)
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  fecha     DateTime @default(now())
+
+  @@map("pases_diarios")
+}

@@ -25,31 +25,20 @@ function ClienteForm({ onGuardar, cerrar }) {
 
   return (
     <form className="cliente-form" onSubmit={guardar}>
-
       <div className="form-header">
-
         <div>
-
           <h2>Nuevo Cliente</h2>
 
           <p>Complete la información del socio.</p>
-
         </div>
 
-        <button
-          type="button"
-          className="cerrar"
-          onClick={cerrar}
-        >
+        <button type="button" className="cerrar" onClick={cerrar}>
           ✕
         </button>
-
       </div>
 
       <div className="form-grid">
-
         <div className="grupo">
-
           <label>Nombre</label>
 
           <input
@@ -58,11 +47,9 @@ function ClienteForm({ onGuardar, cerrar }) {
             placeholder="Ingrese el nombre"
             onChange={cambiar}
           />
-
         </div>
 
         <div className="grupo">
-
           <label>DNI</label>
 
           <input
@@ -71,11 +58,9 @@ function ClienteForm({ onGuardar, cerrar }) {
             placeholder="Ingrese el DNI"
             onChange={cambiar}
           />
-
         </div>
 
         <div className="grupo">
-
           <label>Teléfono</label>
 
           <input
@@ -84,11 +69,9 @@ function ClienteForm({ onGuardar, cerrar }) {
             placeholder="Ingrese el teléfono"
             onChange={cambiar}
           />
-
         </div>
 
         <div className="grupo">
-
           <label>Correo</label>
 
           <input
@@ -97,59 +80,37 @@ function ClienteForm({ onGuardar, cerrar }) {
             placeholder="Ingrese el correo"
             onChange={cambiar}
           />
-
         </div>
 
         <div className="grupo full">
-
           <label>Plan</label>
 
-          <select
-            name="plan"
-            onChange={cambiar}
-          >
+          <select name="plan" onChange={cambiar}>
             <option value="">Seleccione</option>
             <option>Mensual</option>
             <option>Trimestral</option>
             <option>Semestral</option>
             <option>Anual</option>
           </select>
-
         </div>
 
         <div className="grupo full">
-
           <label>Estado</label>
 
-          <select
-            name="estado"
-            defaultValue="Activo"
-            onChange={cambiar}
-          >
+          <select name="estado" defaultValue="Activo" onChange={cambiar}>
             <option>Activo</option>
             <option>Inactivo</option>
           </select>
-
         </div>
-
       </div>
 
       <div className="acciones-form">
-
-        <button
-          type="button"
-          className="cancelar"
-          onClick={cerrar}
-        >
+        <button type="button" className="cancelar" onClick={cerrar}>
           Cancelar
         </button>
 
-        <button className="guardar">
-          Registrar
-        </button>
-
+        <button className="guardar">Registrar</button>
       </div>
-
     </form>
   );
 }
