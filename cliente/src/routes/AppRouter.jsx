@@ -9,6 +9,8 @@ import Home from "../views/Home";
 import Clientes from "../views/Clientes";
 import Entrenadores from "../views/Entrenadores";
 import Usuarios from "../views/Usuarios";
+import Maquinas from "../views/Maquinas";
+import Configuracion from "../views/Configuracion";
 import Planes from "../views/Planes";
 import Pagos from "../views/Pagos";
 import Asistencias from "../views/Asistencias";
@@ -45,12 +47,22 @@ function AppRouter() {
           />
 
           <Route path="/pagos" element={<Pagos />} />
+          <Route path="/maquinas" element={<Maquinas />} />
 
           <Route
             path="/usuarios"
             element={
               <ProtectedRoute rolesPermitidos={["ADMIN"]}>
                 <Usuarios />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/configuracion"
+            element={
+              <ProtectedRoute rolesPermitidos={["ADMIN"]}>
+                <Configuracion />
               </ProtectedRoute>
             }
           />

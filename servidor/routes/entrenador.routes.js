@@ -16,4 +16,8 @@ router.post("/", verificarRol(["ADMIN"]), ctrl.crear);
 router.put("/:id", verificarRol(["ADMIN"]), ctrl.actualizar);
 router.delete("/:id", verificarRol(["ADMIN"]), ctrl.eliminar);
 
+// Horarios de disponibilidad (solo Admin los administra)
+router.post("/:id/horarios", verificarRol(["ADMIN"]), ctrl.agregarHorario);
+router.delete("/horarios/:horarioId", verificarRol(["ADMIN"]), ctrl.eliminarHorario);
+
 module.exports = router;

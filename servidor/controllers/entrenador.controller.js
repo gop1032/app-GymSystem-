@@ -3,7 +3,7 @@ const prisma = require("../config/db");
 async function listar(req, res) {
   const entrenadores = await prisma.entrenador.findMany({
     orderBy: { nombre: "asc" },
-    include: { _count: { select: { clientes: true } } },
+    include: { _count: { select: { clientes: true } }, horarios: true },
   });
   res.json(entrenadores);
 }
@@ -12,7 +12,10 @@ async function obtener(req, res) {
   const { id } = req.params;
   const entrenador = await prisma.entrenador.findUnique({
     where: { id: Number(id) },
-    include: { clientes: true }, // "registro de alumnos que tiene"
+    include: {
+      clientes: true, // "registro de alumnos que tiene"
+      horarios: { orderBy: [{ diaSemana: "asc" }, { horaInicio: "asc" }] },
+    },
   });
 
   if (!entrenador) return res.status(404).json({ mensaje: "Entrenador no encontrado." });
@@ -20,24 +23,24 @@ async function obtener(req, res) {
 }
 
 async function crear(req, res) {
-  const { nombre, especialidad, telefono } = req.body;
+  const { nombre, tipo, especialidad, telefono, disponibilidad } = req.body;
 
   if (!nombre) return res.status(400).json({ mensaje: "El nombre es obligatorio." });
 
   const entrenador = await prisma.entrenador.create({
-    data: { nombre, especialidad, telefono },
+    data: { nombre, tipo: tipo || "INSTRUCTOR", especialidad, telefono, disponibilidad },
   });
   res.status(201).json(entrenador);
 }
 
 async function actualizar(req, res) {
   const { id } = req.params;
-  const { nombre, especialidad, telefono, activo } = req.body;
+  const { nombre, tipo, especialidad, telefono, disponibilidad, activo } = req.body;
 
   try {
     const entrenador = await prisma.entrenador.update({
       where: { id: Number(id) },
-      data: { nombre, especialidad, telefono, activo },
+      data: { nombre, tipo, especialidad, telefono, disponibilidad, activo },
     });
     res.json(entrenador);
   } catch (error) {
@@ -60,4 +63,43 @@ async function eliminar(req, res) {
   }
 }
 
-module.exports = { listar, obtener, crear, actualizar, eliminar };
+// ------------ Horarios de disponibilidad ------------
+
+async function agregarHorario(req, res) {
+  const { id } = req.params; // id del entrenador
+  const { diaSemana, horaInicio, horaFin } = req.body;
+
+  if (diaSemana == null || !horaInicio || !horaFin) {
+    return res.status(400).json({ mensaje: "diaSemana, horaInicio y horaFin son obligatorios." });
+  }
+
+  const horario = await prisma.horarioEntrenador.create({
+    data: {
+      entrenadorId: Number(id),
+      diaSemana: Number(diaSemana),
+      horaInicio,
+      horaFin,
+    },
+  });
+  res.status(201).json(horario);
+}
+
+async function eliminarHorario(req, res) {
+  const { horarioId } = req.params;
+  try {
+    await prisma.horarioEntrenador.delete({ where: { id: Number(horarioId) } });
+    res.json({ mensaje: "Horario eliminado." });
+  } catch (error) {
+    res.status(404).json({ mensaje: "Horario no encontrado." });
+  }
+}
+
+module.exports = {
+  listar,
+  obtener,
+  crear,
+  actualizar,
+  eliminar,
+  agregarHorario,
+  eliminarHorario,
+};

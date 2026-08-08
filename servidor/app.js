@@ -14,6 +14,8 @@ const paseDiarioRoutes = require("./routes/paseDiario.routes");
 const usuarioRoutes = require("./routes/usuario.routes");
 const rolRoutes = require("./routes/rol.routes");
 const asistenciaRoutes = require("./routes/asistencia.routes");
+const configuracionRoutes = require("./routes/configuracion.routes");
+const maquinaRoutes = require("./routes/maquina.routes");
 
 const app = express();
 
@@ -43,6 +45,8 @@ app.use("/api/pases-diarios", paseDiarioRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/roles", rolRoutes);
 app.use("/api/asistencias", asistenciaRoutes);
+app.use("/api/configuracion", configuracionRoutes);
+app.use("/api/maquinas", maquinaRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));

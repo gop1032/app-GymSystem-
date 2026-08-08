@@ -345,3 +345,125 @@
     display: none;
   }
 }
+
+/* ================ Entrenadores: tipo y horarios ================ */
+
+.badge-tipo {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.badge-tipo.personal {
+  background: rgba(232, 196, 104, 0.16);
+  color: var(--brass);
+}
+
+.badge-tipo.instructor {
+  background: rgba(169, 194, 179, 0.14);
+  color: var(--sage);
+}
+
+.subtitulo-detalle {
+  margin-top: 22px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--sage-dim);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 16px;
+}
+
+.lista-horarios {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lista-horarios li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 14px;
+  color: var(--bone);
+  font-family: var(--font-mono);
+}
+
+.btn-quitar {
+  background: none;
+  border: none;
+  color: var(--alert);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 8px;
+}
+
+.form-horario {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.form-horario select,
+.form-horario input {
+  padding: 9px 10px;
+  border: 1px solid var(--border-soft);
+  background: var(--pine-850);
+  color: var(--bone);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.form-horario select option {
+  background: var(--pine-900);
+}
+
+.form-horario button {
+  background: var(--pine-700);
+  color: var(--bone);
+  border: none;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.config-guardado {
+  margin-left: 14px;
+  color: var(--mint);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nota-personalizado {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--sage-dim);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.emoji-maquina {
+  font-size: 24px;
+  display: inline-block;
+  width: 40px;
+  text-align: center;
+}
+
+.miniatura-maquina {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+}

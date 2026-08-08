@@ -2,26 +2,38 @@ import { useEffect, useState } from "react";
 import { obtenerClientes } from "../services/clienteService";
 import { obtenerResumenMensual } from "../services/pagoService";
 import { obtenerAlertas } from "../services/membresiaService";
+import { obtenerPromedioAsistencias } from "../services/asistenciaService";
+import { obtenerConfiguracion } from "../services/configuracionService";
+import { obtenerResumenMaquinas } from "../services/maquinaService";
 import "../styles/home.css";
 
 function Home() {
   const [totalClientes, setTotalClientes] = useState(0);
   const [resumen, setResumen] = useState(null);
   const [alertas, setAlertas] = useState({ vencidas: [], porVencer: [] });
+  const [promedioAsistencias, setPromedioAsistencias] = useState(null);
+  const [configuracion, setConfiguracion] = useState(null);
+  const [resumenMaquinas, setResumenMaquinas] = useState(null);
 
   useEffect(() => {
     cargar();
   }, []);
 
   async function cargar() {
-    const [resClientes, resResumen, resAlertas] = await Promise.all([
+    const [resClientes, resResumen, resAlertas, resPromedio, resConfig, resMaquinas] = await Promise.all([
       obtenerClientes(),
       obtenerResumenMensual(),
       obtenerAlertas(3),
+      obtenerPromedioAsistencias(30),
+      obtenerConfiguracion(),
+      obtenerResumenMaquinas(),
     ]);
     setTotalClientes(resClientes.data.length);
     setResumen(resResumen.data);
     setAlertas(resAlertas.data);
+    setPromedioAsistencias(resPromedio.data);
+    setConfiguracion(resConfig.data);
+    setResumenMaquinas(resMaquinas.data);
   }
 
   return (
@@ -33,7 +45,7 @@ function Home() {
         </div>
       </div>
 
-      <div className="dashboard-cards">
+      <div className="dashboard-cards principal">
         <div className="dashboard-card">
           <span>👥</span>
           <h4>Total Clientes</h4>
@@ -56,6 +68,33 @@ function Home() {
           <span>⏳</span>
           <h4>Por vencer (3 días)</h4>
           <h2>{alertas.porVencer.length}</h2>
+        </div>
+      </div>
+
+      <div className="dashboard-cards" style={{ marginBottom: 28 }}>
+        <div className="dashboard-card">
+          <span>🕒</span>
+          <h4>Horario de atención</h4>
+          <h2 style={{ fontSize: 22 }}>
+            {configuracion ? `${configuracion.horaApertura} – ${configuracion.horaCierre}` : "—"}
+          </h2>
+          <p style={{ marginTop: 6, fontSize: 12 }}>{configuracion?.diasAtencion}</p>
+        </div>
+
+        <div className="dashboard-card">
+          <span>📊</span>
+          <h4>Promedio diario (30 días)</h4>
+          <h2>{promedioAsistencias?.promedioDiario ?? "—"}</h2>
+          <p style={{ marginTop: 6, fontSize: 12 }}>
+            {promedioAsistencias?.totalAsistencias ?? 0} asistencias totales
+          </p>
+        </div>
+
+        <div className="dashboard-card">
+          <span>🏋️</span>
+          <h4>Equipamiento</h4>
+          <h2>{resumenMaquinas?.totalUnidades ?? 0}</h2>
+          <p style={{ marginTop: 6, fontSize: 12 }}>{resumenMaquinas?.totalModelos ?? 0} modelos distintos</p>
         </div>
       </div>
 

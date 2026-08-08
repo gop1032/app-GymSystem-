@@ -3,5 +3,6 @@ import api from "../config/axiosConfig";
 const validarAcceso = ({ qrCode, clienteId }) => api.post("/clientes/acceso/validar", { qrCode, clienteId });
 const buscarClientes = (texto) => api.get("/clientes", { params: { buscar: texto } });
 const obtenerAsistencias = (fecha) => api.get("/asistencias", { params: fecha ? { fecha } : {} });
+const obtenerPromedioAsistencias = (dias = 30) => api.get("/asistencias/reporte/promedio", { params: { dias } });
 
-export { validarAcceso, buscarClientes, obtenerAsistencias };
+export { validarAcceso, buscarClientes, obtenerAsistencias, obtenerPromedioAsistencias };

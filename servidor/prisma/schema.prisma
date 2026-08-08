@@ -44,16 +44,36 @@ model Usuario {
 // ENTRENADORES (solo dato administrativo, sin login)
 // ─────────────────────────────────────────────
 
+enum TipoEntrenador {
+  PERSONALIZADO // entrenador personal: sesiones 1 a 1, agenda propia por cliente
+  INSTRUCTOR    // instructor de piso del gimnasio: cubre un turno general
+}
+
 model Entrenador {
-  id           Int       @id @default(autoincrement())
-  nombre       String
-  especialidad String?
-  telefono     String?
-  activo       Boolean   @default(true)
-  clientes     Cliente[]
-  createdAt    DateTime  @default(now())
+  id             Int              @id @default(autoincrement())
+  nombre         String
+  tipo           TipoEntrenador   @default(INSTRUCTOR)
+  especialidad   String?
+  telefono       String?
+  disponibilidad String? // solo para PERSONALIZADO: texto libre, ej "Coordina por WhatsApp, tardes"
+  activo         Boolean          @default(true)
+  clientes       Cliente[]
+  horarios       HorarioEntrenador[] // solo aplica en la práctica a INSTRUCTOR
+  createdAt      DateTime         @default(now())
 
   @@map("entrenadores")
+}
+
+// Bloques de disponibilidad de cada entrenador (puede tener varios por semana)
+model HorarioEntrenador {
+  id           Int        @id @default(autoincrement())
+  entrenadorId Int
+  entrenador   Entrenador @relation(fields: [entrenadorId], references: [id])
+  diaSemana    Int // 0=Domingo, 1=Lunes, ... 6=Sábado (igual que Date.getDay() en JS)
+  horaInicio   String // formato "HH:mm", ej "08:00"
+  horaFin      String // formato "HH:mm", ej "12:00"
+
+  @@map("horarios_entrenador")
 }
 
 // ─────────────────────────────────────────────
@@ -165,4 +185,49 @@ model PaseDiario {
   fecha     DateTime @default(now())
 
   @@map("pases_diarios")
+}
+
+// ─────────────────────────────────────────────
+// CONFIGURACIÓN DEL GIMNASIO (horario de atención)
+// Tabla de una sola fila (patrón singleton): siempre se usa/edita el id=1.
+// ─────────────────────────────────────────────
+
+model ConfiguracionGimnasio {
+  id            Int      @id @default(1)
+  horaApertura  String   @default("06:00") // formato "HH:mm"
+  horaCierre    String   @default("22:00")
+  diasAtencion  String   @default("Lunes a Domingo")
+  updatedAt     DateTime @updatedAt
+
+  @@map("configuracion_gimnasio")
+}
+
+// ─────────────────────────────────────────────
+// MÁQUINAS / EQUIPAMIENTO DEL GIMNASIO
+// ─────────────────────────────────────────────
+
+enum TipoMaquina {
+  CARDIO
+  FUERZA
+  PESO_LIBRE
+  FUNCIONAL
+  OTRO
+}
+
+enum EstadoMaquina {
+  OPERATIVA
+  MANTENIMIENTO
+  FUERA_DE_SERVICIO
+}
+
+model Maquina {
+  id        Int           @id @default(autoincrement())
+  nombre    String // ej: "Caminadora", "Press de banca", "Rack de sentadillas"
+  tipo      TipoMaquina
+  cantidad  Int           @default(1)
+  estado    EstadoMaquina @default(OPERATIVA)
+  imagenUrl String? // opcional: link a una foto de referencia (no se suben archivos)
+  createdAt DateTime      @default(now())
+
+  @@map("maquinas")
 }

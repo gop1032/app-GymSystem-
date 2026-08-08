@@ -53,6 +53,13 @@ function Layout() {
           </Link>
 
           <Link
+            className={location.pathname === "/maquinas" ? "active" : ""}
+            to="/maquinas"
+          >
+            🏋️‍♂️ Equipamiento
+          </Link>
+
+          <Link
             className={location.pathname === "/asistencias" ? "active" : ""}
             to="/asistencias"
           >
@@ -65,6 +72,15 @@ function Layout() {
               to="/usuarios"
             >
               🔑 Usuarios
+            </Link>
+          )}
+
+          {esAdmin && (
+            <Link
+              className={location.pathname === "/configuracion" ? "active" : ""}
+              to="/configuracion"
+            >
+              ⚙️ Configuración
             </Link>
           )}
         </nav>
