@@ -7,6 +7,8 @@ import Login from "../views/Login";
 import AuthCallback from "../views/AuthCallback";
 import Home from "../views/Home";
 import Clientes from "../views/Clientes";
+import Entrenadores from "../views/Entrenadores";
+import Usuarios from "../views/Usuarios";
 import Planes from "../views/Planes";
 import Pagos from "../views/Pagos";
 import Asistencias from "../views/Asistencias";
@@ -29,6 +31,7 @@ function AppRouter() {
         >
           <Route path="/" element={<Home />} />
           <Route path="/clientes" element={<Clientes />} />
+          <Route path="/entrenadores" element={<Entrenadores />} />
           <Route path="/asistencias" element={<Asistencias />} />
 
           {/* Solo Administrador puede crear/editar Planes (regla de negocio definida) */}
@@ -42,6 +45,15 @@ function AppRouter() {
           />
 
           <Route path="/pagos" element={<Pagos />} />
+
+          <Route
+            path="/usuarios"
+            element={
+              <ProtectedRoute rolesPermitidos={["ADMIN"]}>
+                <Usuarios />
+              </ProtectedRoute>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>

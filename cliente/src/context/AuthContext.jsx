@@ -20,7 +20,7 @@ function AuthProvider({ children }) {
       const { data } = await obtenerPerfil();
       // data.rol viene como { nombre: "ADMIN" | "EMPLEADO" } desde el backend
       setUsuario({ ...data, rol: data.rol?.nombre });
-    } catch (error) {
+    } catch {
       // Token inválido/expirado: el interceptor de axios ya limpia el token y redirige
       setUsuario(null);
     } finally {

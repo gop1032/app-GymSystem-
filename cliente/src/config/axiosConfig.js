@@ -1,8 +1,8 @@
 import axios from "axios";
 
-// URL de tu backend Express (server/servidor). En producción, cambia esto
-// por una variable de entorno de Vite (import.meta.env.VITE_API_URL).
-const API_URL = "http://localhost:4000/api";
+// URL de tu backend Express. En desarrollo usa localhost por defecto.
+// En producción, defínela en Vercel/Netlify como VITE_API_URL.
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
 const api = axios.create({
   baseURL: API_URL,

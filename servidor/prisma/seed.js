@@ -21,7 +21,7 @@ async function main() {
     update: {},
     create: {
       nombre: "Administrador Principal",
-      correo: "nobi1032ta@gmail.com",
+      correo: "admin@gmail.com",
       rolId: rolAdmin.id,
     },
   });

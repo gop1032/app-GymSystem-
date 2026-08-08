@@ -28,6 +28,13 @@ function Layout() {
             👥 Clientes
           </Link>
 
+          <Link
+            className={location.pathname === "/entrenadores" ? "active" : ""}
+            to="/entrenadores"
+          >
+            🏋️ Entrenadores
+          </Link>
+
           {/* Solo Administrador ve y accede a Planes */}
           {esAdmin && (
             <Link
@@ -51,6 +58,15 @@ function Layout() {
           >
             📅 Asistencias / Acceso QR
           </Link>
+
+          {esAdmin && (
+            <Link
+              className={location.pathname === "/usuarios" ? "active" : ""}
+              to="/usuarios"
+            >
+              🔑 Usuarios
+            </Link>
+          )}
         </nav>
       </aside>
 
