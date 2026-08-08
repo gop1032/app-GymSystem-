@@ -373,3 +373,71 @@
 .qr-modal .guardar:hover {
   background: var(--pine-800);
 }
+
+.toggle-pase-diario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--pine-850);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--sage);
+  cursor: pointer;
+}
+
+.toggle-pase-diario input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ember);
+  cursor: pointer;
+}
+
+.qr-acciones {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.qr-acciones button {
+  flex: 1;
+  padding: 9px 6px;
+  border: 1px solid var(--pine-700);
+  background: transparent;
+  color: var(--pine-950);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.qr-acciones button:hover {
+  background: var(--pine-950);
+  color: var(--bone);
+}
+
+/* Impresión: solo se imprime la tarjeta del QR, nada más de la pantalla */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .qr-modal,
+  .qr-modal * {
+    visibility: visible;
+  }
+  .qr-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: none;
+  }
+  .qr-acciones,
+  .qr-modal .guardar {
+    display: none;
+  }
+}

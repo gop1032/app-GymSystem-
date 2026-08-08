@@ -272,3 +272,76 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ================ Historial de asistencias / reporte ================ */
+
+.reporte-asistencias {
+  margin-top: 32px;
+  background: var(--pine-900);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+.reporte-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.reporte-header h2 {
+  font-size: 19px;
+}
+
+.reporte-header p {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.reporte-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reporte-acciones input[type="date"] {
+  padding: 10px 12px;
+  border: 1px solid var(--border-soft);
+  background: var(--pine-850);
+  color: var(--bone);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.reporte-total {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--brass);
+  margin-bottom: 16px;
+}
+
+/* Impresión: solo se ve el reporte, nada del resto de la pantalla */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .reporte-asistencias,
+  .reporte-asistencias * {
+    visibility: visible;
+  }
+  .reporte-asistencias {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border: none;
+  }
+  .reporte-acciones {
+    display: none;
+  }
+}

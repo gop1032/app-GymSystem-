@@ -46,6 +46,43 @@ function Clientes() {
     setQrModal({ nombre: cliente.nombre, imagen: data.imagen });
   };
 
+  const descargarQR = () => {
+    const a = document.createElement("a");
+    a.href = qrModal.imagen;
+    a.download = `QR-${qrModal.nombre.replace(/\s+/g, "-")}.png`;
+    a.click();
+  };
+
+  const imprimirQR = () => {
+    window.print();
+  };
+
+  const compartirQR = async () => {
+    try {
+      const blob = await (await fetch(qrModal.imagen)).blob();
+      const archivo = new File([blob], `QR-${qrModal.nombre}.png`, { type: "image/png" });
+
+      if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+        await navigator.share({
+          files: [archivo],
+          title: "Pase de acceso GymSystem",
+          text: `Pase de acceso de ${qrModal.nombre}`,
+        });
+        return;
+      }
+    } catch {
+      // si el usuario cancela el share nativo, no hacemos nada más
+    }
+
+    // Respaldo en escritorio (sin Web Share API): abre WhatsApp Web con el mensaje
+    // listo; la imagen hay que adjuntarla manualmente (las URLs de WhatsApp no
+    // permiten adjuntar archivos automáticamente).
+    const texto = encodeURIComponent(
+      `Pase de acceso GymSystem — ${qrModal.nombre}. Descarga la imagen QR adjunta y muéstrala en recepción para ingresar.`
+    );
+    window.open(`https://wa.me/?text=${texto}`, "_blank");
+  };
+
   const clientesFiltrados = clientes.filter(
     (cliente) =>
       cliente.nombre.toLowerCase().includes(buscar.toLowerCase()) ||
@@ -102,6 +139,13 @@ function Clientes() {
             <h2>QR de {qrModal.nombre}</h2>
             <img src={qrModal.imagen} alt={`QR de ${qrModal.nombre}`} />
             <p>Este código es el pase de acceso del cliente al gimnasio.</p>
+
+            <div className="qr-acciones">
+              <button onClick={descargarQR}>⬇ Descargar</button>
+              <button onClick={imprimirQR}>🖨 Imprimir</button>
+              <button onClick={compartirQR}>📤 WhatsApp</button>
+            </div>
+
             <button className="guardar" onClick={() => setQrModal(null)}>Cerrar</button>
           </div>
         </div>
