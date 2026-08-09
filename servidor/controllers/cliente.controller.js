@@ -1,4 +1,5 @@
 const prisma = require("../config/db");
+const { randomUUID } = require("crypto");
 const { generarImagenQR } = require("../services/qr.service");
 
 // Trae la membresía más reciente de un cliente (la que manda para saber si está vigente)
@@ -70,6 +71,7 @@ async function crear(req, res) {
       const inicio = fechaInicio ? new Date(fechaInicio) : new Date();
       const fin = new Date(inicio);
       fin.setDate(fin.getDate() + plan.duracionDias);
+      fin.setHours(23, 59, 59, 999); // vence al final del día, no a la hora exacta de registro
 
       await prisma.membresia.create({
         data: {
@@ -143,6 +145,8 @@ async function obtenerQR(req, res) {
 }
 
 // Control de acceso: se llama al escanear el QR (o al buscar manualmente) en la entrada
+const MINUTOS_ANTI_PASSBACK = 120; // 2 horas: evita que el mismo QR (compartido) se use varias veces seguidas
+
 async function validarAcceso(req, res) {
   const { qrCode, clienteId } = req.body; // uno de los dos: escaneo (qrCode) o búsqueda manual (clienteId)
 
@@ -153,6 +157,25 @@ async function validarAcceso(req, res) {
 
   if (!cliente) {
     return res.status(404).json({ acceso: false, mensaje: "Cliente no encontrado / QR inválido." });
+  }
+
+  // Anti-passback: si este cliente ya registró un ingreso hace poco, se rechaza.
+  // Evita que varias personas entren seguidas con la foto de un mismo QR compartido.
+  const ultimaAsistencia = await prisma.asistencia.findFirst({
+    where: { clienteId: cliente.id },
+    orderBy: { fechaHora: "desc" },
+  });
+
+  if (ultimaAsistencia) {
+    const minutosDesdeUltimoIngreso = (Date.now() - ultimaAsistencia.fechaHora.getTime()) / 60000;
+    if (minutosDesdeUltimoIngreso < MINUTOS_ANTI_PASSBACK) {
+      const minutosFaltantes = Math.ceil(MINUTOS_ANTI_PASSBACK - minutosDesdeUltimoIngreso);
+      return res.status(200).json({
+        acceso: false,
+        mensaje: `${cliente.nombre} ya registró su ingreso hace poco. Espera ${minutosFaltantes} min antes de volver a escanear (control anti-passback).`,
+        cliente: { id: cliente.id, nombre: cliente.nombre, dni: cliente.dni },
+      });
+    }
   }
 
   const membresia = membresiaVigente(cliente);
@@ -180,4 +203,20 @@ async function validarAcceso(req, res) {
   });
 }
 
-module.exports = { listar, obtener, crear, actualizar, eliminar, obtenerQR, validarAcceso };
+// Invalida el QR actual del cliente y genera uno nuevo (ej: si sospechan que lo compartieron)
+async function regenerarQR(req, res) {
+  const { id } = req.params;
+
+  try {
+    const cliente = await prisma.cliente.update({
+      where: { id: Number(id) },
+      data: { qrCode: randomUUID() },
+    });
+    const imagen = await generarImagenQR(cliente.qrCode);
+    res.json({ qrCode: cliente.qrCode, imagen });
+  } catch (error) {
+    res.status(404).json({ mensaje: "Cliente no encontrado." });
+  }
+}
+
+module.exports = { listar, obtener, crear, actualizar, eliminar, obtenerQR, validarAcceso, regenerarQR };

@@ -18,6 +18,7 @@ router.delete("/:id", verificarRol(["ADMIN"]), ctrl.eliminar);
 
 // QR y control de acceso (ambos roles pueden operar la recepción)
 router.get("/:id/qr", verificarRol(["ADMIN", "EMPLEADO"]), ctrl.obtenerQR);
+router.post("/:id/regenerar-qr", verificarRol(["ADMIN"]), ctrl.regenerarQR);
 router.post("/acceso/validar", verificarRol(["ADMIN", "EMPLEADO"]), ctrl.validarAcceso);
 
 module.exports = router;

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import ClienteForm from "../components/ClienteForm";
 import ClienteTable from "../components/ClienteTable";
+import useAuth from "../hooks/useAuth";
 import {
   obtenerClientes,
   crearCliente,
   eliminarCliente,
   obtenerQR,
+  regenerarQR,
 } from "../services/clienteService";
 
 import "../styles/clientes.css";
@@ -16,6 +18,7 @@ function membresiaVigente(cliente) {
 }
 
 function Clientes() {
+  const { esAdmin } = useAuth();
   const [clientes, setClientes] = useState([]);
   const [buscar, setBuscar] = useState("");
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -43,7 +46,13 @@ function Clientes() {
 
   const verQR = async (cliente) => {
     const { data } = await obtenerQR(cliente.id);
-    setQrModal({ nombre: cliente.nombre, imagen: data.imagen });
+    setQrModal({ id: cliente.id, nombre: cliente.nombre, imagen: data.imagen });
+  };
+
+  const handleRegenerarQR = async () => {
+    if (!window.confirm(`¿Invalidar el QR actual de ${qrModal.nombre} y generar uno nuevo? El QR viejo dejará de servir de inmediato.`)) return;
+    const { data } = await regenerarQR(qrModal.id);
+    setQrModal({ ...qrModal, imagen: data.imagen });
   };
 
   const descargarQR = () => {
@@ -145,6 +154,12 @@ function Clientes() {
               <button onClick={imprimirQR}>🖨 Imprimir</button>
               <button onClick={compartirQR}>📤 WhatsApp</button>
             </div>
+
+            {esAdmin && (
+              <button className="btn-regenerar-qr" onClick={handleRegenerarQR}>
+                🔄 Regenerar QR (invalidar el actual)
+              </button>
+            )}
 
             <button className="guardar" onClick={() => setQrModal(null)}>Cerrar</button>
           </div>

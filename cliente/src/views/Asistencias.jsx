@@ -39,9 +39,12 @@ function Asistencias() {
 
     scanner.render(
       async (qrCode) => {
-        // Se detectó un QR: se pausa para evitar lecturas repetidas mientras se procesa
+        // Se detectó un QR: se pausa para evitar lecturas repetidas mientras se procesa.
+        // trim() por seguridad: algunos lectores de cámara agregan espacios/saltos
+        // de línea invisibles al texto decodificado, lo que rompería la comparación
+        // exacta contra el código guardado en la base de datos.
         scanner.pause(true);
-        await procesarAcceso({ qrCode });
+        await procesarAcceso({ qrCode: qrCode.trim() });
       },
       () => {} // errores de lectura frame a frame, se ignoran (es normal mientras enfoca)
     );

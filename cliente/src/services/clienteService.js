@@ -5,6 +5,7 @@ const obtenerClientes = (buscar) => {
 };
 
 const obtenerQR = (id) => api.get(`/clientes/${id}/qr`);
+const regenerarQR = (id) => api.post(`/clientes/${id}/regenerar-qr`);
 
 const crearCliente = (cliente) => {
   return api.post("/clientes", cliente);
@@ -18,4 +19,4 @@ const actualizarCliente = (id, cliente) => {
   return api.put(`/clientes/${id}`, cliente);
 };
 
-export { obtenerClientes, crearCliente, eliminarCliente, actualizarCliente, obtenerQR };
+export { obtenerClientes, crearCliente, eliminarCliente, actualizarCliente, obtenerQR, regenerarQR };

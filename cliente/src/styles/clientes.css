@@ -441,3 +441,21 @@
     display: none;
   }
 }
+
+.btn-regenerar-qr {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background: transparent;
+  border: 1px dashed #b45309;
+  color: #b45309;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-regenerar-qr:hover {
+  background: rgba(180, 83, 9, 0.08);
+}

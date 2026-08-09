@@ -37,6 +37,7 @@ async function crear(req, res) {
   const inicio = fechaInicio ? new Date(fechaInicio) : new Date();
   const fin = new Date(inicio);
   fin.setDate(fin.getDate() + plan.duracionDias);
+  fin.setHours(23, 59, 59, 999); // vence al final del día, no a la hora exacta de registro
 
   const membresia = await prisma.membresia.create({
     data: {
