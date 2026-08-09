@@ -13,6 +13,8 @@ function ClienteForm({ onGuardar, cerrar }) {
     correo: "",
     entrenadorId: "",
     planId: "",
+    monto: "",
+    metodo: "EFECTIVO",
   });
   const [planes, setPlanes] = useState([]);
   const [entrenadores, setEntrenadores] = useState([]);
@@ -23,7 +25,15 @@ function ClienteForm({ onGuardar, cerrar }) {
   }, []);
 
   const cambiar = (e) => {
-    setCliente({ ...cliente, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "planId") {
+      const planElegido = planes.find((p) => p.id === Number(value));
+      setCliente({ ...cliente, planId: value, monto: planElegido ? planElegido.precio : "" });
+      return;
+    }
+
+    setCliente({ ...cliente, [name]: value });
   };
 
   const guardar = async (e) => {
@@ -122,7 +132,7 @@ function ClienteForm({ onGuardar, cerrar }) {
 
             <div className="grupo full">
               <label>Plan inicial (opcional, puede asignarse después)</label>
-              <select name="planId" onChange={cambiar}>
+              <select name="planId" value={cliente.planId} onChange={cambiar}>
                 <option value="">Sin plan por ahora</option>
                 {planes.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -131,6 +141,31 @@ function ClienteForm({ onGuardar, cerrar }) {
                 ))}
               </select>
             </div>
+
+            {cliente.planId && (
+              <>
+                <div className="grupo">
+                  <label>Monto cobrado (S/.)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    name="monto"
+                    value={cliente.monto}
+                    onChange={cambiar}
+                    required
+                  />
+                </div>
+
+                <div className="grupo">
+                  <label>Método de pago</label>
+                  <select name="metodo" value={cliente.metodo} onChange={cambiar}>
+                    <option value="EFECTIVO">Efectivo</option>
+                    <option value="YAPE">Yape</option>
+                    <option value="PLIN">Plin</option>
+                  </select>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>

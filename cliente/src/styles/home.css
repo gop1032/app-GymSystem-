@@ -62,14 +62,15 @@
   color: var(--bone);
 }
 
-/* Acentos por tipo de métrica (solo en la grilla principal de 4 tarjetas) */
-.dashboard-cards.principal .dashboard-card:nth-child(2) h2 {
+/* Acentos por tipo de métrica (solo en la grilla principal, ahora con 5 tarjetas) */
+.dashboard-cards.principal .dashboard-card:nth-child(2) h2,
+.dashboard-cards.principal .dashboard-card:nth-child(3) h2 {
   color: var(--brass);
 }
-.dashboard-cards.principal .dashboard-card:nth-child(3) h2 {
+.dashboard-cards.principal .dashboard-card:nth-child(4) h2 {
   color: var(--alert);
 }
-.dashboard-cards.principal .dashboard-card:nth-child(4) h2 {
+.dashboard-cards.principal .dashboard-card:nth-child(5) h2 {
   color: var(--mint);
 }
 

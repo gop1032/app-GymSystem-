@@ -50,26 +50,25 @@ async function crear(req, res) {
 async function resumenMensual(req, res) {
   const hoy = new Date();
   const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const inicioHoy = new Date();
+  inicioHoy.setHours(0, 0, 0, 0);
+  const finHoy = new Date(inicioHoy);
+  finHoy.setDate(finHoy.getDate() + 1);
 
-  const [pagos, pasesDiarios] = await Promise.all([
-    prisma.pago.aggregate({
-      where: { fecha: { gte: inicioMes } },
-      _sum: { monto: true },
-      _count: true,
-    }),
-    prisma.paseDiario.aggregate({
-      where: { fecha: { gte: inicioMes } },
-      _sum: { monto: true },
-      _count: true,
-    }),
+  const [pagosMes, pasesMes, pagosHoy, pasesHoy] = await Promise.all([
+    prisma.pago.aggregate({ where: { fecha: { gte: inicioMes } }, _sum: { monto: true }, _count: true }),
+    prisma.paseDiario.aggregate({ where: { fecha: { gte: inicioMes } }, _sum: { monto: true }, _count: true }),
+    prisma.pago.aggregate({ where: { fecha: { gte: inicioHoy, lt: finHoy } }, _sum: { monto: true } }),
+    prisma.paseDiario.aggregate({ where: { fecha: { gte: inicioHoy, lt: finHoy } }, _sum: { monto: true } }),
   ]);
 
   res.json({
-    ingresosMembresias: pagos._sum.monto || 0,
-    cantidadPagosMembresias: pagos._count,
-    ingresosPasesDiarios: pasesDiarios._sum.monto || 0,
-    cantidadPasesDiarios: pasesDiarios._count,
-    ingresosTotales: (pagos._sum.monto || 0) + (pasesDiarios._sum.monto || 0),
+    ingresosMembresias: pagosMes._sum.monto || 0,
+    cantidadPagosMembresias: pagosMes._count,
+    ingresosPasesDiarios: pasesMes._sum.monto || 0,
+    cantidadPasesDiarios: pasesMes._count,
+    ingresosTotales: (pagosMes._sum.monto || 0) + (pasesMes._sum.monto || 0),
+    ingresosHoy: (pagosHoy._sum.monto || 0) + (pasesHoy._sum.monto || 0),
   });
 }
 

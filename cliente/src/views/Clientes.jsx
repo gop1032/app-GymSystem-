@@ -252,10 +252,8 @@ function Clientes() {
                       onChange={(e) => setFormPlan({ ...formPlan, metodo: e.target.value })}
                     >
                       <option value="EFECTIVO">Efectivo</option>
-                      <option value="TARJETA">Tarjeta</option>
                       <option value="YAPE">Yape</option>
                       <option value="PLIN">Plin</option>
-                      <option value="TRANSFERENCIA">Transferencia</option>
                     </select>
                   </div>
                 </div>

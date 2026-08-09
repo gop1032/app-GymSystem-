@@ -59,6 +59,12 @@ function Home() {
         </div>
 
         <div className="dashboard-card">
+          <span>🪙</span>
+          <h4>Ingresos de hoy</h4>
+          <h2>S/. {resumen?.ingresosHoy?.toFixed(2) ?? "0.00"}</h2>
+        </div>
+
+        <div className="dashboard-card">
           <span>⚠️</span>
           <h4>Membresías vencidas</h4>
           <h2>{alertas.vencidas.length}</h2>

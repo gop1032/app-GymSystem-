@@ -8,7 +8,8 @@ const router = Router();
 router.use(verificarAuth);
 router.use(verificarRol(["ADMIN", "EMPLEADO"]));
 
-router.get("/reporte/promedio", ctrl.promedio); // antes de "/" no aplica (rutas distintas), pero se declara junto por claridad
+router.get("/reporte/promedio", ctrl.promedio);
+router.get("/reporte/estadisticas", ctrl.estadisticas);
 router.get("/", ctrl.listar);
 
 module.exports = router;

@@ -10,4 +10,6 @@ const crearMembresia = (data) => api.post("/membresias", data);
 
 const cancelarMembresia = (id) => api.patch(`/membresias/${id}/cancelar`);
 
-export { obtenerMembresias, obtenerAlertas, crearMembresia, cancelarMembresia };
+const obtenerReporte = () => api.get("/membresias/reporte");
+
+export { obtenerMembresias, obtenerAlertas, crearMembresia, cancelarMembresia, obtenerReporte };

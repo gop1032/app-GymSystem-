@@ -11,6 +11,7 @@ import Entrenadores from "../views/Entrenadores";
 import Usuarios from "../views/Usuarios";
 import Maquinas from "../views/Maquinas";
 import Configuracion from "../views/Configuracion";
+import Reportes from "../views/Reportes";
 import Planes from "../views/Planes";
 import Pagos from "../views/Pagos";
 import Asistencias from "../views/Asistencias";
@@ -48,6 +49,7 @@ function AppRouter() {
 
           <Route path="/pagos" element={<Pagos />} />
           <Route path="/maquinas" element={<Maquinas />} />
+          <Route path="/reportes" element={<Reportes />} />
 
           <Route
             path="/usuarios"

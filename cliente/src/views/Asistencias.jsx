@@ -15,7 +15,7 @@ function Asistencias() {
   const scannerRef = useRef(null);
 
   const [fechaHistorial, setFechaHistorial] = useState(hoyISO());
-  const [historial, setHistorial] = useState({ total: 0, asistencias: [] });
+  const [historial, setHistorial] = useState({ totalVisitantes: 0, ingresosDia: 0, registros: [] });
 
   useEffect(() => {
     cargarHistorial(fechaHistorial);
@@ -91,11 +91,13 @@ function Asistencias() {
 
   function exportarCSV() {
     const filas = [
-      ["Cliente", "DNI", "Hora"],
-      ...historial.asistencias.map((a) => [
-        a.cliente.nombre,
-        a.cliente.dni,
-        new Date(a.fechaHora).toLocaleTimeString(),
+      ["Tipo", "Nombre", "DNI", "Hora", "Monto pagado"],
+      ...historial.registros.map((r) => [
+        r.tipo === "socio" ? "Socio" : "Pase diario",
+        r.nombre,
+        r.dni,
+        new Date(r.hora).toLocaleTimeString(),
+        r.monto.toFixed(2),
       ]),
     ];
 
@@ -186,28 +188,36 @@ function Asistencias() {
         </div>
 
         <div className="reporte-total">
-          Total de asistencias el {fechaHistorial}: <strong>{historial.total}</strong>
+          {fechaHistorial}: <strong>{historial.totalVisitantes}</strong> visitantes — Ingresos del día: <strong>S/. {historial.ingresosDia.toFixed(2)}</strong>
         </div>
 
         <table className="tabla">
           <thead>
             <tr>
-              <th>Cliente</th>
+              <th></th>
+              <th>Nombre</th>
               <th>DNI</th>
-              <th>Hora de ingreso</th>
+              <th>Hora</th>
+              <th>Monto pagado</th>
             </tr>
           </thead>
           <tbody>
-            {historial.asistencias.map((a) => (
-              <tr key={a.id}>
-                <td>{a.cliente.nombre}</td>
-                <td>{a.cliente.dni}</td>
-                <td>{new Date(a.fechaHora).toLocaleTimeString()}</td>
+            {historial.registros.map((r, i) => (
+              <tr key={i}>
+                <td>
+                  <span className={`badge-tipo ${r.tipo === "socio" ? "instructor" : "personal"}`}>
+                    {r.tipo === "socio" ? "Socio" : "Pase diario"}
+                  </span>
+                </td>
+                <td>{r.nombre}</td>
+                <td>{r.dni}</td>
+                <td>{new Date(r.hora).toLocaleTimeString()}</td>
+                <td>{r.monto > 0 ? `S/. ${r.monto.toFixed(2)}` : "—"}</td>
               </tr>
             ))}
-            {historial.asistencias.length === 0 && (
+            {historial.registros.length === 0 && (
               <tr>
-                <td colSpan={3}>No hay asistencias registradas ese día.</td>
+                <td colSpan={5}>No hay asistencias registradas ese día.</td>
               </tr>
             )}
           </tbody>

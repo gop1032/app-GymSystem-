@@ -5,4 +5,6 @@ const buscarClientes = (texto) => api.get("/clientes", { params: { buscar: texto
 const obtenerAsistencias = (fecha) => api.get("/asistencias", { params: fecha ? { fecha } : {} });
 const obtenerPromedioAsistencias = (dias = 30) => api.get("/asistencias/reporte/promedio", { params: { dias } });
 
-export { validarAcceso, buscarClientes, obtenerAsistencias, obtenerPromedioAsistencias };
+const obtenerEstadisticas = (dias = 30) => api.get("/asistencias/reporte/estadisticas", { params: { dias } });
+
+export { validarAcceso, buscarClientes, obtenerAsistencias, obtenerPromedioAsistencias, obtenerEstadisticas };

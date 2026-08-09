@@ -1,0 +1,127 @@
+.reportes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.reportes-filtro {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reportes-filtro label {
+  font-size: 13px;
+  color: var(--sage);
+}
+
+.reportes-filtro select {
+  padding: 10px 12px;
+  border: 1px solid var(--border-soft);
+  background: var(--pine-850);
+  color: var(--bone);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.reportes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.reporte-card {
+  background: var(--pine-900);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+}
+
+.reporte-titulo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--bone);
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.reporte-filas {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reporte-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 14px;
+  color: var(--sage);
+}
+
+.reporte-fila:last-child {
+  border-bottom: none;
+}
+
+.reporte-fila strong {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  color: var(--bone);
+}
+
+.valor-mint {
+  color: var(--mint) !important;
+}
+
+.valor-alert {
+  color: var(--alert) !important;
+}
+
+.valor-brass {
+  color: var(--brass) !important;
+}
+
+.reporte-hora {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reporte-hora span {
+  font-size: 13px;
+  color: var(--bone);
+}
+
+.reporte-hora strong {
+  font-family: var(--font-mono);
+  font-size: 15px;
+}
+
+.reporte-hora-pico {
+  background: rgba(255, 122, 69, 0.1);
+  border: 1px solid rgba(255, 122, 69, 0.3);
+}
+
+.reporte-hora-pico strong {
+  color: var(--ember);
+}
+
+.reporte-hora-valle {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.reporte-hora-valle strong {
+  color: var(--mint);
+}

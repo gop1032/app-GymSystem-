@@ -66,6 +66,13 @@ function Layout() {
             📅 Asistencias / Acceso QR
           </Link>
 
+          <Link
+            className={location.pathname === "/reportes" ? "active" : ""}
+            to="/reportes"
+          >
+            📈 Reportes
+          </Link>
+
           {esAdmin && (
             <Link
               className={location.pathname === "/usuarios" ? "active" : ""}

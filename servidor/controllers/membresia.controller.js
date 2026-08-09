@@ -99,4 +99,36 @@ async function alertas(req, res) {
   res.json({ vencidas, porVencer });
 }
 
-module.exports = { listar, obtener, crear, cancelar, alertas };
+module.exports = { listar, obtener, crear, cancelar, alertas, reporte };
+
+// Reporte general de membresías para la pantalla de Reportes
+async function reporte(req, res) {
+  const hoy = new Date();
+  const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const limitePorVencer = new Date();
+  limitePorVencer.setDate(hoy.getDate() + 7);
+
+  const [activas, porVencer, vencidas, membresiasEsteMes, historialPrevio] = await Promise.all([
+    prisma.membresia.count({ where: { estado: "ACTIVA", fechaFin: { gte: hoy } } }),
+    prisma.membresia.count({ where: { estado: "ACTIVA", fechaFin: { gte: hoy, lte: limitePorVencer } } }),
+    prisma.membresia.count({ where: { estado: "ACTIVA", fechaFin: { lt: hoy } } }),
+    prisma.membresia.findMany({ where: { createdAt: { gte: inicioMes } }, select: { clienteId: true } }),
+    prisma.membresia.findMany({
+      where: { createdAt: { lt: inicioMes } },
+      select: { clienteId: true },
+      distinct: ["clienteId"],
+    }),
+  ]);
+
+  // Si el cliente ya tenía una membresía ANTES de este mes, la de este mes es una renovación.
+  // Si no, es su primera membresía (cliente nuevo).
+  const idsConHistorial = new Set(historialPrevio.map((m) => m.clienteId));
+  let nuevasEsteMes = 0;
+  let renovadas = 0;
+  for (const m of membresiasEsteMes) {
+    if (idsConHistorial.has(m.clienteId)) renovadas++;
+    else nuevasEsteMes++;
+  }
+
+  res.json({ activas, porVencer, vencidas, nuevasEsteMes, renovadas });
+}

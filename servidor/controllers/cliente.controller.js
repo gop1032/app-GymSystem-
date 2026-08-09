@@ -46,7 +46,7 @@ async function obtener(req, res) {
 }
 
 async function crear(req, res) {
-  const { nombre, dni, telefono, correo, entrenadorId, planId, fechaInicio } = req.body;
+  const { nombre, dni, telefono, correo, entrenadorId, planId, fechaInicio, monto, metodo } = req.body;
 
   if (!nombre || !dni) {
     return res.status(400).json({ mensaje: "Nombre y DNI son obligatorios." });
@@ -85,12 +85,23 @@ async function crear(req, res) {
       fin.setDate(fin.getDate() + plan.duracionDias);
       fin.setHours(23, 59, 59, 999); // vence al final del día, no a la hora exacta de registro
 
-      await prisma.membresia.create({
+      const membresia = await prisma.membresia.create({
         data: {
           clienteId: cliente.id,
           planId: plan.id,
           fechaInicio: inicio,
           fechaFin: fin,
+        },
+      });
+
+      // Se registra el pago del plan inicial (monto sugerido = precio del plan,
+      // pero el recepcionista puede ajustarlo si cobró distinto).
+      await prisma.pago.create({
+        data: {
+          membresiaId: membresia.id,
+          usuarioId: req.usuario.id,
+          monto: monto != null ? Number(monto) : plan.precio,
+          metodo: metodo || "EFECTIVO",
         },
       });
     }
