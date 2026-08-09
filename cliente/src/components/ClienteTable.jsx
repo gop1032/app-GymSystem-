@@ -3,7 +3,7 @@ function membresiaActiva(cliente) {
   return cliente.membresias[0]; // ya viene ordenada por fechaFin desc desde el backend
 }
 
-function ClienteTable({ clientes, eliminar, verQR }) {
+function ClienteTable({ clientes, eliminar, verQR, asignarPlan }) {
   return (
     <div className="tabla-container">
       <table className="tabla-clientes">
@@ -46,6 +46,13 @@ function ClienteTable({ clientes, eliminar, verQR }) {
                 <td>
                   <button className="btn-icon ver" onClick={() => verQR(cliente)} title="Ver QR">
                     🔳
+                  </button>
+                  <button
+                    className="btn-icon"
+                    onClick={() => asignarPlan(cliente)}
+                    title={vigente ? "Renovar plan" : "Asignar plan"}
+                  >
+                    📋
                   </button>
                   <button
                     className="btn-icon eliminar"

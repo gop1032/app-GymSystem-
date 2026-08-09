@@ -53,11 +53,15 @@ model Entrenador {
   id             Int              @id @default(autoincrement())
   nombre         String
   tipo           TipoEntrenador   @default(INSTRUCTOR)
+  dni            String?          @unique
   especialidad   String?
+  direccion      String?
   telefono       String?
+  correo         String? // opcional
+  fotoUrl        String? // link a foto de perfil (no se suben archivos, igual que en Máquinas)
   disponibilidad String? // solo para PERSONALIZADO: texto libre, ej "Coordina por WhatsApp, tardes"
   activo         Boolean          @default(true)
-  clientes       Cliente[]
+  clientes       Cliente[] // solo aplica en la práctica a PERSONALIZADO
   horarios       HorarioEntrenador[] // solo aplica en la práctica a INSTRUCTOR
   createdAt      DateTime         @default(now())
 

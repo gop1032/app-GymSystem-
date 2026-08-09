@@ -23,27 +23,47 @@ async function obtener(req, res) {
 }
 
 async function crear(req, res) {
-  const { nombre, tipo, especialidad, telefono, disponibilidad } = req.body;
+  const { nombre, tipo, dni, especialidad, direccion, telefono, correo, fotoUrl, disponibilidad } = req.body;
 
   if (!nombre) return res.status(400).json({ mensaje: "El nombre es obligatorio." });
 
-  const entrenador = await prisma.entrenador.create({
-    data: { nombre, tipo: tipo || "INSTRUCTOR", especialidad, telefono, disponibilidad },
-  });
-  res.status(201).json(entrenador);
+  try {
+    const entrenador = await prisma.entrenador.create({
+      data: {
+        nombre,
+        tipo: tipo || "INSTRUCTOR",
+        dni: dni || null,
+        especialidad,
+        direccion,
+        telefono,
+        correo,
+        fotoUrl,
+        disponibilidad,
+      },
+    });
+    res.status(201).json(entrenador);
+  } catch (error) {
+    if (error.code === "P2002") {
+      return res.status(409).json({ mensaje: "Ya existe un entrenador registrado con ese DNI." });
+    }
+    res.status(500).json({ mensaje: "Error al crear el entrenador.", error: error.message });
+  }
 }
 
 async function actualizar(req, res) {
   const { id } = req.params;
-  const { nombre, tipo, especialidad, telefono, disponibilidad, activo } = req.body;
+  const { nombre, tipo, dni, especialidad, direccion, telefono, correo, fotoUrl, disponibilidad, activo } = req.body;
 
   try {
     const entrenador = await prisma.entrenador.update({
       where: { id: Number(id) },
-      data: { nombre, tipo, especialidad, telefono, disponibilidad, activo },
+      data: { nombre, tipo, dni, especialidad, direccion, telefono, correo, fotoUrl, disponibilidad, activo },
     });
     res.json(entrenador);
   } catch (error) {
+    if (error.code === "P2002") {
+      return res.status(409).json({ mensaje: "Ya existe un entrenador registrado con ese DNI." });
+    }
     res.status(404).json({ mensaje: "Entrenador no encontrado." });
   }
 }

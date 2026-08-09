@@ -109,12 +109,14 @@ function ClienteForm({ onGuardar, cerrar }) {
             </div>
 
             <div className="grupo">
-              <label>Entrenador (opcional)</label>
+              <label>Entrenador Personal (opcional)</label>
               <select name="entrenadorId" onChange={cambiar}>
                 <option value="">Sin asignar</option>
-                {entrenadores.map((ent) => (
-                  <option key={ent.id} value={ent.id}>{ent.nombre}</option>
-                ))}
+                {entrenadores
+                  .filter((ent) => ent.tipo === "PERSONALIZADO")
+                  .map((ent) => (
+                    <option key={ent.id} value={ent.id}>{ent.nombre}</option>
+                  ))}
               </select>
             </div>
 

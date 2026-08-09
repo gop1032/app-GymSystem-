@@ -53,6 +53,18 @@ async function crear(req, res) {
   }
 
   try {
+    // Regla de negocio: solo un entrenador PERSONALIZADO puede tener alumnos asignados.
+    // Un instructor de gimnasio no gestiona alumnos individuales.
+    if (entrenadorId) {
+      const entrenador = await prisma.entrenador.findUnique({ where: { id: Number(entrenadorId) } });
+      if (!entrenador) return res.status(404).json({ mensaje: "Entrenador no encontrado." });
+      if (entrenador.tipo !== "PERSONALIZADO") {
+        return res.status(400).json({
+          mensaje: "Solo se pueden asignar alumnos a un Entrenador Personal, no a un Instructor de Gimnasio.",
+        });
+      }
+    }
+
     const cliente = await prisma.cliente.create({
       data: {
         nombre,
@@ -102,6 +114,16 @@ async function actualizar(req, res) {
   const { nombre, telefono, correo, entrenadorId } = req.body;
 
   try {
+    if (entrenadorId) {
+      const entrenador = await prisma.entrenador.findUnique({ where: { id: Number(entrenadorId) } });
+      if (!entrenador) return res.status(404).json({ mensaje: "Entrenador no encontrado." });
+      if (entrenador.tipo !== "PERSONALIZADO") {
+        return res.status(400).json({
+          mensaje: "Solo se pueden asignar alumnos a un Entrenador Personal, no a un Instructor de Gimnasio.",
+        });
+      }
+    }
+
     const cliente = await prisma.cliente.update({
       where: { id: Number(id) },
       data: {
