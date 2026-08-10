@@ -1,0 +1,269 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  RECEPTIONIST
+  TRAINER
+  CLIENT
+  ACCOUNTANT
+  NUTRITIONIST
+}
+
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum AttendanceSource {
+  MANUAL
+  QR
+}
+
+model User {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  password    String
+  role        UserRole @default(ADMIN)
+  isActive    Boolean  @default(true)
+  photo       String?
+  createdAt   DateTime @default(now())
+  registeredAttendances Attendance[] @relation("AttendanceRegisteredBy")
+  trainerProfile Trainer? @relation("UserTrainerProfile")
+  sales       Sale[]
+  notifications Notification[]
+  refreshTokens RefreshToken[]
+  audits      AuditLog[] @relation("AuditUser")
+}
+
+model Client {
+  id          String   @id @default(cuid())
+  name        String
+  email       String?  @unique
+  phone       String
+  dni         String   @unique
+  photo       String?
+  status      ClientStatus @default(ACTIVE)
+  trainerId   String?
+  trainer     Trainer? @relation(fields: [trainerId], references: [id], onDelete: SetNull)
+  memberships Membership[]
+  payments    Payment[]
+  attendances Attendance[]
+  routines    Routine[]
+  trainerLinks TrainerClient[]
+  createdAt   DateTime @default(now())
+}
+
+model Membership {
+  id          String   @id @default(cuid())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  plan        String
+  startDate   DateTime
+  endDate     DateTime
+  price       Decimal
+  status      MembershipStatus @default(ACTIVE)
+  payments    Payment[]
+  createdAt   DateTime @default(now())
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  membershipId  String?
+  membership    Membership? @relation(fields: [membershipId], references: [id], onDelete: SetNull)
+  amount        Decimal
+  method        String
+  date          DateTime @default(now())
+  notes         String?
+  receiptNumber String   @unique
+  histories     PaymentHistory[]
+}
+
+model Attendance {
+  id            String   @id @default(cuid())
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  checkIn       DateTime
+  checkOut      DateTime?
+  date          DateTime @default(now())
+  source        AttendanceSource @default(MANUAL)
+  registeredById String
+  registeredBy  User     @relation("AttendanceRegisteredBy", fields: [registeredById], references: [id], onDelete: Restrict)
+}
+
+model Trainer {
+  id           String   @id @default(cuid())
+  userId       String?  @unique
+  user         User?    @relation("UserTrainerProfile", fields: [userId], references: [id], onDelete: SetNull)
+  specialty    String
+  bio          String?
+  isActive     Boolean  @default(true)
+  clients      Client[]
+  routines     Routine[]
+  trainerClients TrainerClient[]
+}
+
+model TrainerClient {
+  id        String  @id @default(cuid())
+  trainerId String
+  clientId  String
+  trainer   Trainer @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  client    Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([trainerId, clientId])
+}
+
+model Routine {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  clientId    String
+  trainerId   String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  trainer     Trainer  @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  exercises   Exercise[]
+  createdAt   DateTime @default(now())
+}
+
+model Exercise {
+  id           String   @id @default(cuid())
+  name         String
+  sets         Int
+  reps         String
+  restSeconds  Int
+  notes        String?
+  routineId    String
+  routine      Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  name      String
+  category  String
+  stock     Int      @default(0)
+  price     Decimal
+  isActive  Boolean  @default(true)
+  imageUrl  String?
+  sales     Sale[]
+}
+
+model Sale {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity   Int
+  unitPrice  Decimal
+  total      Decimal
+  date       DateTime @default(now())
+  soldById   String
+  soldBy     User     @relation(fields: [soldById], references: [id], onDelete: Restrict)
+}
+
+model Role {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  permissions RolePermission[]
+}
+
+model Permission {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  roles       RolePermission[]
+}
+
+model RolePermission {
+  id           String     @id @default(cuid())
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  isRead    Boolean  @default(false)
+  meta      Json?
+  createdAt DateTime @default(now())
+}
+
+model PaymentHistory {
+  id           String   @id @default(cuid())
+  paymentId    String
+  payment      Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  action       String
+  provider     String?
+  providerRef  String?
+  status       String
+  metadata     Json?
+  createdAt    DateTime @default(now())
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  level     String
+  message   String
+  context   Json?
+  createdAt DateTime @default(now())
+}
+
+model Configuration {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  desc  String?
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model File {
+  id        String   @id @default(cuid())
+  path      String
+  filename  String
+  mimeType  String
+  size      Int
+  uploadedBy String?
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  entity    String
+  entityId  String
+  action    String
+  before    Json?
+  after     Json?
+  userId    String?
+  user      User?    @relation("AuditUser", fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+}
