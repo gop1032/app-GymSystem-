@@ -1,0 +1,42 @@
+name: Deploy Backend to Railway (template)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  migrate-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Apply migrations (Railway DB)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cd backend
+          npx prisma migrate deploy
+
+      - name: Build backend (example)
+        run: |
+          cd backend
+          npm run build || echo "No build step defined"
+
+      - name: Deploy to Railway (manual step)
+        run: |
+          echo "This workflow runs migrations and builds the backend."
+          echo "To complete a Railway deployment, connect your repo in Railway or add a Railway deploy step with RAILWAY_API_KEY."
+
+    # Notes: add the following secrets in GitHub repo settings:
+    # - DATABASE_URL => connection string for Railway/Supabase/Postgres
+    # - RAILWAY_API_KEY (optional) => for automated railway CLI deployments
