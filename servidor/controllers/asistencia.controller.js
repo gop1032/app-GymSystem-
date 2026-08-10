@@ -1,11 +1,19 @@
 const prisma = require("../config/db");
 
+// Convierte un texto "YYYY-MM-DD" a medianoche en hora LOCAL (no UTC).
+// new Date("YYYY-MM-DD") se interpreta como UTC y luego .setHours() mutaba
+// en hora local, desfasando el rango del día completo en zonas como Perú (UTC-5).
+function fechaLocalDesdeTexto(texto) {
+  const [anio, mes, dia] = texto.split("-").map(Number);
+  return new Date(anio, mes - 1, dia); // constructor con partes = siempre hora local
+}
+
 // Lista quién asistió un día específico (socios con QR + visitantes de pase diario)
 // y cuánto pagó cada uno ese día. GET /api/asistencias?fecha=YYYY-MM-DD
 async function listar(req, res) {
   const { fecha } = req.query;
 
-  const inicio = fecha ? new Date(fecha) : new Date();
+  const inicio = fecha ? fechaLocalDesdeTexto(fecha) : new Date();
   inicio.setHours(0, 0, 0, 0);
 
   const fin = new Date(inicio);

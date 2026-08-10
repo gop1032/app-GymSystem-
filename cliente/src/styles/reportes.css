@@ -125,3 +125,33 @@
 .reporte-hora-valle strong {
   color: var(--mint);
 }
+
+.reporte-subtitulo {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--sage-dim);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 16px;
+}
+
+.reporte-vacio {
+  font-size: 13px;
+  color: var(--sage-dim);
+  padding: 10px 0;
+}
+
+@media (max-width: 600px) {
+  .reportes-filtro {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .reportes-filtro select,
+  .reportes-filtro button {
+    width: 100%;
+  }
+}

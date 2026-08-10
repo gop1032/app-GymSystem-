@@ -1,15 +1,28 @@
+import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import PulseLine from "./PulseLine";
+import RelojEnVivo from "./RelojEnVivo";
 import "../styles/layout.css";
 
 function Layout() {
   const location = useLocation();
   const { usuario, esAdmin, cerrarSesion } = useAuth();
+  const [sidebarAbierto, setSidebarAbierto] = useState(false);
+
+  // Cierra el panel automáticamente al navegar a otra sección (celular/tablet)
+  useEffect(() => {
+    setSidebarAbierto(false);
+  }, [location.pathname]);
 
   return (
     <div className="layout">
-      <aside className="sidebar">
+      {/* Fondo oscuro detrás del panel cuando está abierto en pantallas chicas */}
+      {sidebarAbierto && (
+        <div className="sidebar-overlay" onClick={() => setSidebarAbierto(false)} />
+      )}
+
+      <aside className={`sidebar ${sidebarAbierto ? "sidebar-abierta" : ""}`}>
         <div className="logo">
           <h1>GYMSYSTEM</h1>
           <span>Control de acceso</span>
@@ -35,7 +48,6 @@ function Layout() {
             🏋️ Entrenadores
           </Link>
 
-          {/* Solo Administrador ve y accede a Planes */}
           {esAdmin && (
             <Link
               className={location.pathname === "/planes" ? "active" : ""}
@@ -95,7 +107,18 @@ function Layout() {
 
       <div className="main">
         <header className="topbar">
-          <h2>GymSystem</h2>
+          <div className="topbar-izquierda">
+            <button
+              className="btn-hamburguesa"
+              onClick={() => setSidebarAbierto(!sidebarAbierto)}
+              aria-label="Abrir menú"
+            >
+              ☰
+            </button>
+            <h2>GymSystem</h2>
+          </div>
+
+          <RelojEnVivo />
 
           <div className="topbar-right">
             <input type="text" placeholder="Buscar..." />

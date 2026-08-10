@@ -72,4 +72,40 @@ async function resumenMensual(req, res) {
   });
 }
 
-module.exports = { listar, crear, resumenMensual };
+module.exports = { listar, crear, resumenMensual, resumenPorMetodo };
+
+// Ingresos de hoy y del mes, desglosados por método de pago (Efectivo/Yape/Plin/...),
+// combinando Pagos de membresía + Pases diarios.
+async function resumenPorMetodo(req, res) {
+  const hoy = new Date();
+  const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const finMes = new Date(inicioMes);
+  finMes.setMonth(finMes.getMonth() + 1);
+
+  const inicioHoy = new Date();
+  inicioHoy.setHours(0, 0, 0, 0);
+  const finHoy = new Date(inicioHoy);
+  finHoy.setDate(finHoy.getDate() + 1);
+
+  async function combinarPorMetodo(desde, hasta) {
+    const [pagos, pases] = await Promise.all([
+      prisma.pago.groupBy({ by: ["metodo"], where: { fecha: { gte: desde, lt: hasta } }, _sum: { monto: true } }),
+      prisma.paseDiario.groupBy({ by: ["metodo"], where: { fecha: { gte: desde, lt: hasta } }, _sum: { monto: true } }),
+    ]);
+
+    const combinado = {};
+    for (const p of pagos) combinado[p.metodo] = (combinado[p.metodo] || 0) + (p._sum.monto || 0);
+    for (const p of pases) combinado[p.metodo] = (combinado[p.metodo] || 0) + (p._sum.monto || 0);
+    return combinado;
+  }
+
+  const [hoyPorMetodo, mesPorMetodo] = await Promise.all([
+    combinarPorMetodo(inicioHoy, finHoy),
+    combinarPorMetodo(inicioMes, finMes),
+  ]);
+
+  const totalHoy = Object.values(hoyPorMetodo).reduce((a, b) => a + b, 0);
+  const totalMes = Object.values(mesPorMetodo).reduce((a, b) => a + b, 0);
+
+  res.json({ hoyPorMetodo, mesPorMetodo, totalHoy, totalMes });
+}

@@ -6,7 +6,7 @@ import "../styles/modulos.css";
 function Pagos() {
   const [pagos, setPagos] = useState([]);
   const [pases, setPases] = useState([]);
-  const [formPase, setFormPase] = useState({ nombre: "", dni: "", monto: "" });
+  const [formPase, setFormPase] = useState({ nombre: "", dni: "", monto: "", metodo: "EFECTIVO" });
 
   useEffect(() => {
     cargar();
@@ -21,7 +21,7 @@ function Pagos() {
   async function handleRegistrarPase(e) {
     e.preventDefault();
     await registrarPaseDiario({ ...formPase, monto: Number(formPase.monto) });
-    setFormPase({ nombre: "", dni: "", monto: "" });
+    setFormPase({ nombre: "", dni: "", monto: "", metodo: "EFECTIVO" });
     cargar();
   }
 
@@ -51,6 +51,14 @@ function Pagos() {
             onChange={(e) => setFormPase({ ...formPase, monto: e.target.value })}
             required
           />
+          <select
+            value={formPase.metodo}
+            onChange={(e) => setFormPase({ ...formPase, metodo: e.target.value })}
+          >
+            <option value="EFECTIVO">Efectivo</option>
+            <option value="YAPE">Yape</option>
+            <option value="PLIN">Plin</option>
+          </select>
           <button type="submit">Registrar ingreso</button>
         </form>
       </div>

@@ -8,7 +8,8 @@ const router = Router();
 router.use(verificarAuth);
 router.use(verificarRol(["ADMIN", "EMPLEADO"]));
 
-router.get("/resumen-mensual", ctrl.resumenMensual); // antes de "/:id" no aplica aquí, pero se mantiene el orden por claridad
+router.get("/resumen-mensual", ctrl.resumenMensual);
+router.get("/resumen-por-metodo", ctrl.resumenPorMetodo);
 router.get("/", ctrl.listar);
 router.post("/", ctrl.crear);
 

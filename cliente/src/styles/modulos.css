@@ -564,3 +564,52 @@
   font-weight: 600;
   margin-right: 6px;
 }
+
+/* ================ Responsivo (tablets y celulares) ================ */
+
+@media (max-width: 768px) {
+  .form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-inline input,
+  .form-inline select,
+  .form-inline button {
+    width: 100%;
+  }
+
+  .tabla {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .reporte-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reporte-acciones {
+    flex-wrap: wrap;
+  }
+
+  .perfiles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-horario {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .perfiles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modulo h1 {
+    font-size: 24px;
+  }
+}

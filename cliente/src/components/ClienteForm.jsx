@@ -6,6 +6,7 @@ import { registrarPaseDiario } from "../services/paseDiarioService";
 function ClienteForm({ onGuardar, cerrar }) {
   const [esPaseDiario, setEsPaseDiario] = useState(false);
   const [montoDia, setMontoDia] = useState("");
+  const [metodoDia, setMetodoDia] = useState("EFECTIVO");
   const [cliente, setCliente] = useState({
     nombre: "",
     dni: "",
@@ -46,6 +47,7 @@ function ClienteForm({ onGuardar, cerrar }) {
         nombre: cliente.nombre,
         dni: cliente.dni || undefined,
         monto: Number(montoDia),
+        metodo: metodoDia,
       });
       alert(`Ingreso de un día registrado para ${cliente.nombre}. No se generó QR (no es un socio permanente).`);
       cerrar();
@@ -95,17 +97,27 @@ function ClienteForm({ onGuardar, cerrar }) {
         </div>
 
         {esPaseDiario ? (
-          <div className="grupo full">
-            <label>Monto cobrado (S/.)</label>
-            <input
-              type="number"
-              step="0.01"
-              placeholder="Ej: 15.00"
-              value={montoDia}
-              onChange={(e) => setMontoDia(e.target.value)}
-              required
-            />
-          </div>
+          <>
+            <div className="grupo">
+              <label>Monto cobrado (S/.)</label>
+              <input
+                type="number"
+                step="0.01"
+                placeholder="Ej: 15.00"
+                value={montoDia}
+                onChange={(e) => setMontoDia(e.target.value)}
+                required
+              />
+            </div>
+            <div className="grupo">
+              <label>Método de pago</label>
+              <select value={metodoDia} onChange={(e) => setMetodoDia(e.target.value)}>
+                <option value="EFECTIVO">Efectivo</option>
+                <option value="YAPE">Yape</option>
+                <option value="PLIN">Plin</option>
+              </select>
+            </div>
+          </>
         ) : (
           <>
             <div className="grupo">
