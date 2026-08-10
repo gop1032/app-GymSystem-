@@ -1,0 +1,44 @@
+{
+  "name": "gymsystem-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "seed": "node prisma/seed.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:deploy": "prisma migrate deploy",
+    "lint": "eslint . --ext .js,.jsx",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-validator": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.8.0",
+    "xss-clean": "^0.1.1",
+    "nodemailer": "^6.9.16",
+    "@prisma/client": "^5.22.0",
+    "stripe": "^11.18.0",
+    "exceljs": "^4.3.0",
+    "pdfkit": "^0.13.0",
+    "pino": "^8.16.0",
+    "pino-pretty": "^9.4.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0",
+    "eslint": "^8.50.0",
+    "prettier": "^2.8.8",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-config-prettier": "^9.0.0"
+  }
+}
